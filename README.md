@@ -21,3 +21,6 @@ docker-compose up -d
 
 ## ERD 작성
 [ERD](./docs/ERD.md)
+
+## API 문서
+[API 문서](./docs/Api-spec.md)
