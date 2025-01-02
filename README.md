@@ -11,3 +11,10 @@
 ```bash
 docker-compose up -d
 ```
+
+## 프로젝트 마일스톤
+[프로젝트 마일스톤](./docs/Milestone.md)
+
+## 요구사항 분석
+[요구사항 분석](./docs/Requirement.md)
+[시퀀스 다이어그램](./docs/SequenceDiagram.md)
