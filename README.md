@@ -17,3 +17,4 @@ docker-compose up -d
 
 ## 요구사항 분석
 [요구사항 분석](./docs/Requirement.md)
+[시퀀스 다이어그램](./docs/SequenceDiagram.md)
