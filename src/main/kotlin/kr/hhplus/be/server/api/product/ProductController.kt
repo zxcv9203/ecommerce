@@ -5,7 +5,7 @@ import kr.hhplus.be.server.api.product.response.PopularProductsResponse
 import kr.hhplus.be.server.api.product.response.ProductResponse
 import kr.hhplus.be.server.api.product.response.ProductsResponse
 import kr.hhplus.be.server.common.constant.SuccessCode
-import kr.hhplus.be.server.common.model.ApiResponse
+import kr.hhplus.be.server.common.model.CustomResponse
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1")
-class ProductController {
+class ProductController : ProductApi {
     @GetMapping("/products")
-    fun findAll(pageable: Pageable): ResponseEntity<ApiResponse<ProductsResponse>> {
+    override fun findAll(pageable: Pageable): ResponseEntity<CustomResponse<ProductsResponse>> {
         val products =
             listOf(
                 ProductResponse(1, "상품1", 10000, 10),
@@ -68,11 +68,11 @@ class ProductController {
             )
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(ApiResponse.success(SuccessCode.PRODUCT_QUERY, response))
+            .body(CustomResponse.success(SuccessCode.PRODUCT_QUERY, response))
     }
 
     @GetMapping("/popular-products")
-    fun findPopularProducts(): ResponseEntity<ApiResponse<PopularProductsResponse>> {
+    override fun findPopularProducts(): ResponseEntity<CustomResponse<PopularProductsResponse>> {
         val products =
             listOf(
                 PopularProductResponse(1, 1, "상품 A", 12000, 150),
@@ -84,6 +84,6 @@ class ProductController {
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(ApiResponse.success(SuccessCode.POPULAR_PRODUCT_QUERY, PopularProductsResponse(products)))
+            .body(CustomResponse.success(SuccessCode.POPULAR_PRODUCT_QUERY, PopularProductsResponse(products)))
     }
 }

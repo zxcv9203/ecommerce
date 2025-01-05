@@ -5,19 +5,19 @@ import kr.hhplus.be.server.api.user.response.UserBalanceResponse
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.common.exception.BusinessException
-import kr.hhplus.be.server.common.model.ApiResponse
+import kr.hhplus.be.server.common.model.CustomResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/users/{userId}/balance")
-class UserBalanceController {
+class UserBalanceController : UserBalanceApi {
     @PatchMapping
-    fun charge(
+    override fun charge(
         @PathVariable userId: Long,
         @RequestBody request: UserBalanceRequest,
-    ): ResponseEntity<ApiResponse<UserBalanceResponse>> {
+    ): ResponseEntity<CustomResponse<UserBalanceResponse>> {
         if (userId != 1L) {
             throw BusinessException(ErrorCode.USER_NOT_FOUND)
         }
@@ -27,20 +27,20 @@ class UserBalanceController {
             else -> {
                 ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(ApiResponse.success(SuccessCode.USER_BALANCE_CHARGE, UserBalanceResponse(request.amount)))
+                    .body(CustomResponse.success(SuccessCode.USER_BALANCE_CHARGE, UserBalanceResponse(request.amount)))
             }
         }
     }
 
     @GetMapping
-    fun get(
+    override fun get(
         @PathVariable userId: Long,
-    ): ResponseEntity<ApiResponse<UserBalanceResponse>> {
+    ): ResponseEntity<CustomResponse<UserBalanceResponse>> {
         if (userId != 1L) {
             throw BusinessException(ErrorCode.USER_NOT_FOUND)
         }
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(ApiResponse.success(SuccessCode.USER_BALANCE_QUERY, UserBalanceResponse(20000)))
+            .body(CustomResponse.success(SuccessCode.USER_BALANCE_QUERY, UserBalanceResponse(20000)))
     }
 }

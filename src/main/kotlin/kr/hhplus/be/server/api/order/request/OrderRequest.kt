@@ -8,5 +8,5 @@ data class OrderRequest(
 
 data class OrderItemRequest(
     val productId: Long,
-    val quantity: Int
+    val quantity: Int,
 )

@@ -4,7 +4,7 @@ import kr.hhplus.be.server.api.payment.request.PaymentRequest
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.common.exception.BusinessException
-import kr.hhplus.be.server.common.model.ApiResponse
+import kr.hhplus.be.server.common.model.CustomResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/payments")
-class PaymentController {
+class PaymentController : PaymentApi {
     @PostMapping
-    fun pay(
+    override fun pay(
         @RequestBody request: PaymentRequest,
-    ): ResponseEntity<ApiResponse<Unit>> {
+    ): ResponseEntity<CustomResponse<Unit>> {
         if (request.userId != 1L) {
             throw BusinessException(ErrorCode.USER_NOT_FOUND)
         }
@@ -45,6 +45,6 @@ class PaymentController {
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(ApiResponse.success(SuccessCode.PAYMENT_COMPLETED))
+            .body(CustomResponse.success(SuccessCode.PAYMENT_COMPLETED))
     }
 }
