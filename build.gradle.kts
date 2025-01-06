@@ -18,6 +18,7 @@ fun getGitHash(): String =
 group = "kr.hhplus.be"
 version = getGitHash()
 val swaggerVersion = "2.7.0"
+val mockkVersion = "1.13.14"
 
 java {
     toolchain {
@@ -60,6 +61,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:mysql")
+    testImplementation("io.mockk:mockk:$mockkVersion")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
