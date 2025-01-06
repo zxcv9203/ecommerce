@@ -155,6 +155,7 @@ Mock API에서는 couponPolicyId가 1인 요청만 정상적으로 요청이 가
 Mock API에서는 couponPolicyId가 2인 요청은 발급기간이 지난 쿠폰입니다.
 Mock API에서는 couponPolicyId가 3인 요청은 이미 발급된 쿠폰입니다.
 Mock API에서는 couponPolicyId가 4인 요청은 발급 가능 개수를 초과한 쿠폰입니다.
+
 ### 응답
 
 #### 성공
@@ -353,16 +354,6 @@ Mock API에서는 userId가 1인 사용자만 정상적으로 요청이 가능�
 {
   "code": 404,
   "message": "존재하지 않는 쿠폰입니다.",
-  "data": {}
-}
-```
-
-#### 실패 (쿠폰을 전달받았을 때 쿠폰이 만료된 경우)
-
-```json
-{
-  "code": 400,
-  "message": "쿠폰이 만료되었습니다.",
   "data": {}
 }
 ```

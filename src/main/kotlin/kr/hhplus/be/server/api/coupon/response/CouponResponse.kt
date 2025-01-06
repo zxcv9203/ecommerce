@@ -2,7 +2,6 @@ package kr.hhplus.be.server.api.coupon.response
 
 import kr.hhplus.be.server.domain.coupon.CouponDiscountType
 import kr.hhplus.be.server.domain.coupon.CouponStatus
-import java.time.LocalDateTime
 
 data class CouponResponse(
     val id: Long,
@@ -12,8 +11,6 @@ data class CouponResponse(
     val discountType: CouponDiscountType,
     val discountValue: Int,
     val status: CouponStatus,
-    val issuedAt: LocalDateTime,
-    val expiresAt: LocalDateTime,
 )
 
 data class CouponsResponse(

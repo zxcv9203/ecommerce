@@ -188,9 +188,9 @@ sequenceDiagram
     else 쿠폰 내 것이 아님
         Coupon -->> OrderAPI: 예외 발생
         OrderAPI -->> User: "쿠폰 소유자가 아닙니다"
-    else 쿠폰 만료됨 또는 이미 사용됨
+    else 쿠폰 이미 사용됨
         Coupon -->> OrderAPI: 예외 발생
-        OrderAPI -->> User: "쿠폰이 만료되었거나 이미 사용되었습니다"
+        OrderAPI -->> User: "쿠폰이 이미 사용되었습니다"
     else 쿠폰 유효
         Coupon -->> OrderAPI: 쿠폰 확인 완료
         OrderAPI ->> Product: 상품 존재 여부 확인
