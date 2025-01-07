@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS users
 (
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name       VARCHAR(255) NOT NULL COMMENT '사용자 이름',
+    name       VARCHAR(50) NOT NULL COMMENT '사용자 이름',
     balance    BIGINT       NOT NULL COMMENT '잔액',
     version    INT          NOT NULL COMMENT '낙관적락을 위한 버전',
     created_at DATETIME     NOT NULL COMMENT '생성 시간',

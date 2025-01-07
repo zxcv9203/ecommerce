@@ -1,24 +1,23 @@
-package kr.hhplus.be.server.domain.order
+package kr.hhplus.be.server.domain.user
 
 import jakarta.persistence.*
 import kr.hhplus.be.server.common.model.BaseEntity
-import kr.hhplus.be.server.domain.user.User
 import org.hibernate.annotations.Comment
 
 @Entity
-@Table(name = "orders")
-class Order(
+@Table(name = "balance_histories")
+class BalanceHistory(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @Comment("주문자")
+    @Comment("사용자")
     val user: User,
-    @Column(name = "total_price", nullable = false)
-    @Comment("총 가격")
-    val totalPrice: Long,
-    @Column(name = "status", nullable = false, length = 20)
+    @Column(name = "type", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
-    @Comment("주문 상태")
-    val status: OrderStatus,
+    @Comment("잔액 변동 유형")
+    val type: BalanceHistoryType,
+    @Column(name = "amount", nullable = false)
+    @Comment("잔액 변동 금액")
+    val amount: Long,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
