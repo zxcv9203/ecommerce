@@ -9,6 +9,7 @@ enum class ErrorCode(
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
     USER_BALANCE_BELOW_MINIMUM(HttpStatus.BAD_REQUEST, "충전 금액은 최소 10,000원 이상이어야 합니다."),
     USER_BALANCE_EXCEEDS_LIMIT(HttpStatus.BAD_REQUEST, "잔액 상한을 초과할 수 없습니다."),
+    USER_BALANCE_CHARGE_FAILED(HttpStatus.BAD_REQUEST, "잔액 충전에 실패했습니다."),
     COUPON_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 쿠폰입니다."),
     COUPON_ISSUE_EXPIRED(HttpStatus.BAD_REQUEST, "쿠폰 발급 기간이 지났습니다."),
     COUPON_ALREADY_ISSUED(HttpStatus.BAD_REQUEST, "이미 발급된 쿠폰이 있습니다."),

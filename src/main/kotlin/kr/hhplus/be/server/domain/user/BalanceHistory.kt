@@ -21,4 +21,15 @@ class BalanceHistory(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-) : BaseEntity()
+) : BaseEntity() {
+    companion object {
+        fun createByCharge(
+            user: User,
+            amount: Long,
+        ) = BalanceHistory(
+            user = user,
+            type = BalanceHistoryType.CHARGE,
+            amount = amount,
+        )
+    }
+}

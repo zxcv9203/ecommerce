@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.domain.user
 
 import jakarta.persistence.*
+import kr.hhplus.be.server.common.constant.ErrorCode
+import kr.hhplus.be.server.common.exception.BusinessException
 import kr.hhplus.be.server.common.model.BaseEntity
 import org.hibernate.annotations.Comment
 
@@ -16,8 +18,19 @@ class User(
     @Version
     @Column(name = "version", nullable = false)
     @Comment("낙관적락을 위한 버전")
-    var version: Int = 0,
+    val version: Long = 0,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-) : BaseEntity()
+) : BaseEntity() {
+    fun charge(amount: Long) {
+        if (amount < MINIMUM_BALANCE) throw BusinessException(ErrorCode.USER_BALANCE_BELOW_MINIMUM)
+        if (balance + amount >= MAXIMUM_BALANCE) throw BusinessException(ErrorCode.USER_BALANCE_EXCEEDS_LIMIT)
+        balance += amount
+    }
+
+    companion object {
+        const val MINIMUM_BALANCE = 10_000L
+        const val MAXIMUM_BALANCE = 10_000_000L
+    }
+}
