@@ -1,7 +1,10 @@
 package kr.hhplus.be.server.domain.coupon
 
 import jakarta.persistence.*
+import kr.hhplus.be.server.common.constant.ErrorCode
+import kr.hhplus.be.server.common.exception.BusinessException
 import kr.hhplus.be.server.common.model.BaseEntity
+import kr.hhplus.be.server.domain.user.User
 import org.hibernate.annotations.Comment
 import java.time.LocalDateTime
 
@@ -19,7 +22,7 @@ class CouponPolicy(
     val totalCount: Int,
     @Column(name = "current_count", nullable = false)
     @Comment("현재 쿠폰 수량")
-    val currentCount: Int,
+    var currentCount: Int,
     @Column(name = "start_time", nullable = false)
     @Comment("시작 시간")
     val startTime: LocalDateTime,
@@ -36,4 +39,13 @@ class CouponPolicy(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-) : BaseEntity()
+) : BaseEntity() {
+    fun issue(user: User): Coupon {
+        if (endTime.isBefore(LocalDateTime.now())) throw BusinessException(ErrorCode.COUPON_ISSUE_EXPIRED)
+        if (startTime.isAfter(LocalDateTime.now())) throw BusinessException(ErrorCode.COUPON_ISSUE_NOT_STARTED)
+        if (totalCount <= currentCount) throw BusinessException(ErrorCode.COUPON_OUT_OF_COUNT)
+
+        currentCount++
+        return Coupon(this, user, CouponStatus.ACTIVE)
+    }
+}

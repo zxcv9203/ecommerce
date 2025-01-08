@@ -11,11 +11,11 @@ CREATE TABLE IF NOT EXISTS users
 CREATE TABLE IF NOT EXISTS balance_histories
 (
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id    BIGINT       NOT NULL COMMENT '사용자 ID',
+    user_id    BIGINT      NOT NULL COMMENT '사용자 ID',
     type       VARCHAR(20) NOT NULL COMMENT '잔액 변동 유형',
-    amount     BIGINT       NOT NULL COMMENT '잔액 변동 금액',
-    created_at DATETIME     NOT NULL COMMENT '생성 시간',
-    updated_at DATETIME     NOT NULL COMMENT '수정 시간'
+    amount     BIGINT      NOT NULL COMMENT '잔액 변동 금액',
+    created_at DATETIME    NOT NULL COMMENT '생성 시간',
+    updated_at DATETIME    NOT NULL COMMENT '수정 시간'
 );
 
 CREATE TABLE IF NOT EXISTS products
@@ -32,11 +32,11 @@ CREATE TABLE IF NOT EXISTS products
 CREATE TABLE IF NOT EXISTS orders
 (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id     BIGINT       NOT NULL COMMENT '주문자 ID',
-    total_price BIGINT       NOT NULL COMMENT '총 가격',
+    user_id     BIGINT      NOT NULL COMMENT '주문자 ID',
+    total_price BIGINT      NOT NULL COMMENT '총 가격',
     status      VARCHAR(20) NOT NULL COMMENT '주문 상태',
-    created_at  DATETIME     NOT NULL COMMENT '생성 시간',
-    updated_at  DATETIME     NOT NULL COMMENT '수정 시간'
+    created_at  DATETIME    NOT NULL COMMENT '생성 시간',
+    updated_at  DATETIME    NOT NULL COMMENT '수정 시간'
 );
 
 CREATE TABLE IF NOT EXISTS order_items
@@ -53,23 +53,24 @@ CREATE TABLE IF NOT EXISTS order_items
 CREATE TABLE IF NOT EXISTS payments
 (
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
-    order_id   BIGINT       NOT NULL COMMENT '주문 ID',
-    amount     BIGINT       NOT NULL COMMENT '결제 금액',
+    order_id   BIGINT      NOT NULL COMMENT '주문 ID',
+    amount     BIGINT      NOT NULL COMMENT '결제 금액',
     type       VARCHAR(20) NOT NULL COMMENT '결제 수단',
     status     VARCHAR(20) NOT NULL COMMENT '결제 상태',
-    created_at DATETIME     NOT NULL COMMENT '생성 시간',
-    updated_at DATETIME     NOT NULL COMMENT '수정 시간'
+    created_at DATETIME    NOT NULL COMMENT '생성 시간',
+    updated_at DATETIME    NOT NULL COMMENT '수정 시간'
 );
 
 CREATE TABLE IF NOT EXISTS coupons
 (
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
-    policy_id  BIGINT       NOT NULL COMMENT '쿠폰 정책 ID',
-    user_id    BIGINT       NOT NULL COMMENT '사용자 ID',
+    policy_id  BIGINT      NOT NULL COMMENT '쿠폰 정책 ID',
+    user_id    BIGINT      NOT NULL COMMENT '사용자 ID',
     order_id   BIGINT DEFAULT NULL COMMENT '주문 ID',
     status     VARCHAR(20) NOT NULL COMMENT '쿠폰 상태',
-    created_at DATETIME     NOT NULL COMMENT '생성 시간',
-    updated_at DATETIME     NOT NULL COMMENT '수정 시간'
+    created_at DATETIME    NOT NULL COMMENT '생성 시간',
+    updated_at DATETIME    NOT NULL COMMENT '수정 시간',
+    UNIQUE KEY uk_policy_user (policy_id, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS coupon_policies
@@ -81,7 +82,7 @@ CREATE TABLE IF NOT EXISTS coupon_policies
     current_count   INT          NOT NULL COMMENT '현재 쿠폰 수량',
     start_time      DATETIME     NOT NULL COMMENT '시작 시간',
     end_time        DATETIME     NOT NULL COMMENT '종료 시간',
-    discount_type   VARCHAR(20) NOT NULL COMMENT '할인 유형',
+    discount_type   VARCHAR(20)  NOT NULL COMMENT '할인 유형',
     discount_amount BIGINT       NOT NULL COMMENT '할인 금액',
     created_at      DATETIME     NOT NULL COMMENT '생성 시간',
     updated_at      DATETIME     NOT NULL COMMENT '수정 시간'
