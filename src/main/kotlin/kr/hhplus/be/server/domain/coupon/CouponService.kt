@@ -1,8 +1,11 @@
 package kr.hhplus.be.server.domain.coupon
 
+import kr.hhplus.be.server.api.coupon.response.CouponResponse
+import kr.hhplus.be.server.application.coupon.command.FindUserCouponCommand
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.exception.BusinessException
 import kr.hhplus.be.server.domain.user.User
+import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -25,4 +28,7 @@ class CouponService(
         val coupon = couponPolicy.issue(user)
         couponRepository.save(coupon)
     }
+
+    fun findAllByUserId(command: FindUserCouponCommand): Slice<CouponResponse> =
+        couponRepository.findAllByUserId(command.userId, command.pageable)
 }

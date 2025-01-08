@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/v1/users/{userId}/coupons")
@@ -38,8 +37,6 @@ class UserCouponController : UserCouponApi {
                     CouponDiscountType.AMOUNT,
                     5000,
                     CouponStatus.ACTIVE,
-                    LocalDateTime.of(2025, 1, 1, 10, 0),
-                    LocalDateTime.of(2025, 1, 15, 23, 59),
                 ),
                 CouponResponse(
                     2,
@@ -49,8 +46,6 @@ class UserCouponController : UserCouponApi {
                     CouponDiscountType.PERCENT,
                     10,
                     CouponStatus.USED,
-                    LocalDateTime.of(2024, 12, 20, 10, 0),
-                    LocalDateTime.of(2024, 12, 31, 23, 59),
                 ),
                 CouponResponse(
                     3,
@@ -60,8 +55,6 @@ class UserCouponController : UserCouponApi {
                     CouponDiscountType.AMOUNT,
                     3000,
                     CouponStatus.USED,
-                    LocalDateTime.of(2024, 11, 15, 10, 0),
-                    LocalDateTime.of(2024, 11, 30, 23, 59),
                 ),
                 CouponResponse(
                     4,
@@ -71,8 +64,6 @@ class UserCouponController : UserCouponApi {
                     CouponDiscountType.PERCENT,
                     15,
                     CouponStatus.ACTIVE,
-                    LocalDateTime.of(2025, 1, 2, 12, 0),
-                    LocalDateTime.of(2025, 1, 16, 23, 59),
                 ),
                 CouponResponse(
                     5,
@@ -81,9 +72,7 @@ class UserCouponController : UserCouponApi {
                     "신규 가입 시 제공되는 감사 쿠폰",
                     CouponDiscountType.AMOUNT,
                     7000,
-                    CouponStatus.EXPIRED,
-                    LocalDateTime.of(2025, 1, 3, 14, 0),
-                    LocalDateTime.of(2025, 1, 17, 23, 59),
+                    CouponStatus.ACTIVE,
                 ),
                 CouponResponse(
                     6,
@@ -93,8 +82,6 @@ class UserCouponController : UserCouponApi {
                     CouponDiscountType.PERCENT,
                     20,
                     CouponStatus.CANCELLED,
-                    LocalDateTime.of(2024, 12, 10, 10, 0),
-                    LocalDateTime.of(2024, 12, 25, 23, 59),
                 ),
                 CouponResponse(
                     7,
@@ -104,8 +91,6 @@ class UserCouponController : UserCouponApi {
                     CouponDiscountType.AMOUNT,
                     1000,
                     CouponStatus.ACTIVE,
-                    LocalDateTime.of(2024, 12, 1, 10, 0),
-                    LocalDateTime.of(2024, 12, 5, 23, 59),
                 ),
                 CouponResponse(
                     8,
@@ -115,8 +100,6 @@ class UserCouponController : UserCouponApi {
                     CouponDiscountType.PERCENT,
                     5,
                     CouponStatus.ACTIVE,
-                    LocalDateTime.of(2025, 1, 5, 15, 0),
-                    LocalDateTime.of(2025, 1, 20, 23, 59),
                 ),
                 CouponResponse(
                     9,
@@ -126,8 +109,6 @@ class UserCouponController : UserCouponApi {
                     CouponDiscountType.AMOUNT,
                     1500,
                     CouponStatus.ACTIVE,
-                    LocalDateTime.of(2024, 11, 25, 10, 0),
-                    LocalDateTime.of(2024, 12, 1, 23, 59),
                 ),
                 CouponResponse(
                     10,
@@ -137,8 +118,6 @@ class UserCouponController : UserCouponApi {
                     CouponDiscountType.PERCENT,
                     25,
                     CouponStatus.ACTIVE,
-                    LocalDateTime.of(2025, 1, 6, 16, 0),
-                    LocalDateTime.of(2025, 1, 21, 23, 59),
                 ),
                 CouponResponse(
                     11,
@@ -148,8 +127,6 @@ class UserCouponController : UserCouponApi {
                     CouponDiscountType.AMOUNT,
                     4500,
                     CouponStatus.ACTIVE,
-                    LocalDateTime.of(2024, 11, 10, 10, 0),
-                    LocalDateTime.of(2024, 11, 20, 23, 59),
                 ),
             )
 
@@ -165,8 +142,6 @@ class UserCouponController : UserCouponApi {
                                 when (property) {
                                     "id" -> a.id.compareTo(b.id)
                                     "policyId" -> a.policyId.compareTo(b.policyId)
-                                    "issuedAt" -> a.issuedAt.compareTo(b.issuedAt)
-                                    "expiresAt" -> a.expiresAt.compareTo(b.expiresAt)
                                     "discountValue" -> a.discountValue.compareTo(b.discountValue)
                                     else -> 0
                                 }

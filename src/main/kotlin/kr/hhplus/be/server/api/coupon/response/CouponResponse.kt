@@ -9,7 +9,7 @@ data class CouponResponse(
     val name: String,
     val description: String,
     val discountType: CouponDiscountType,
-    val discountValue: Int,
+    val discountValue: Long,
     val status: CouponStatus,
 )
 
