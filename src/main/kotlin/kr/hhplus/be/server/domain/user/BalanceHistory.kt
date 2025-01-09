@@ -31,5 +31,15 @@ class BalanceHistory(
             type = BalanceHistoryType.CHARGE,
             amount = amount,
         )
+
+        fun createByUse(
+            user: User,
+            amount: Long,
+        ): BalanceHistory =
+            BalanceHistory(
+                user = user,
+                type = BalanceHistoryType.USE,
+                amount = amount,
+            )
     }
 }

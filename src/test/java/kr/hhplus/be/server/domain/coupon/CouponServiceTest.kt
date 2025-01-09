@@ -74,7 +74,23 @@ class CouponServiceTest {
 
             assertThatThrownBy { couponService.reserve(coupon, order) }
                 .isInstanceOf(BusinessException::class.java)
-                .hasFieldOrPropertyWithValue("code", ErrorCode.COUPON_RESERVE_FAIL)
+                .hasFieldOrPropertyWithValue("code", ErrorCode.COUPON_USE_FAIL)
+        }
+    }
+
+    @Nested
+    @DisplayName("쿠폰 사용")
+    inner class Use {
+        @Test
+        @DisplayName("[실패] 쿠폰 상태를 변경 중 충돌이 발생한 경우 BusinessException 발생")
+        fun test_fail_when_conflict() {
+            val coupon = CouponFixture.create(status = CouponStatus.RESERVED)
+
+            every { couponRepository.save(coupon) } throws OptimisticLockingFailureException("")
+
+            assertThatThrownBy { couponService.use(coupon) }
+                .isInstanceOf(BusinessException::class.java)
+                .hasFieldOrPropertyWithValue("code", ErrorCode.COUPON_USE_FAIL)
         }
     }
 }

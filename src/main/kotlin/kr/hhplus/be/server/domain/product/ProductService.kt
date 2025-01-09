@@ -10,6 +10,7 @@ import kr.hhplus.be.server.common.exception.BusinessException
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ProductService(
@@ -34,5 +35,18 @@ class ProductService(
                 .also { it.ensureAvailableStock(item.quantity) }
                 .toOrderProductInfo(item.quantity)
         }
+    }
+
+    @Transactional
+    fun reduceStock(orderItems: List<OrderItemCommand>) {
+        val productIds = orderItems.map { it.productId }
+        val products = productRepository.findAllByIdsWithLock(productIds)
+
+        products.forEach { product ->
+            val orderItem = orderItems.first { it.productId == product.id }
+            product.reduceStock(orderItem.quantity)
+        }
+
+        productRepository.saveAll(products)
     }
 }

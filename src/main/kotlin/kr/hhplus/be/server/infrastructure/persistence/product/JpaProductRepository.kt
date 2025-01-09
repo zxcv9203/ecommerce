@@ -1,13 +1,13 @@
 package kr.hhplus.be.server.infrastructure.persistence.product
 
+import jakarta.persistence.LockModeType
 import kr.hhplus.be.server.domain.product.Product
-import kr.hhplus.be.server.domain.product.ProductRepository
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 
-interface JpaProductRepository :
-    ProductRepository,
-    JpaRepository<Product, Long> {
+interface JpaProductRepository : JpaRepository<Product, Long> {
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query(
         """
             SELECT p
@@ -15,5 +15,5 @@ interface JpaProductRepository :
             WHERE p.id IN :ids
         """,
     )
-    override fun findAllByIds(ids: List<Long>): List<Product>
+    fun findAllByIdsWithLock(ids: List<Long>): List<Product>
 }

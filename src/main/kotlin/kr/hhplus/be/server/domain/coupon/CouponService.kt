@@ -53,7 +53,19 @@ class CouponService(
         try {
             couponRepository.save(coupon)
         } catch (e: OptimisticLockingFailureException) {
-            throw BusinessException(ErrorCode.COUPON_RESERVE_FAIL)
+            throw BusinessException(ErrorCode.COUPON_USE_FAIL)
+        }
+    }
+
+    fun findByOrderId(orderId: Long): Coupon? = couponRepository.findByOrderId(orderId)
+
+    @Transactional
+    fun use(coupon: Coupon) {
+        coupon.use()
+        try {
+            couponRepository.save(coupon)
+        } catch (e: OptimisticLockingFailureException) {
+            throw BusinessException(ErrorCode.COUPON_USE_FAIL)
         }
     }
 }

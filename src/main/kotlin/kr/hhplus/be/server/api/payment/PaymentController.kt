@@ -40,7 +40,6 @@ class PaymentController : PaymentApi {
             "COMPLETED" -> throw BusinessException(ErrorCode.ORDER_ALREADY_PROCESSED)
             "OUT_OF_STOCK" -> throw BusinessException(ErrorCode.PRODUCT_OUT_OF_STOCK)
             "INSUFFICIENT_BALANCE" -> throw BusinessException(ErrorCode.INSUFFICIENT_BALANCE)
-            else -> throw BusinessException(ErrorCode.ORDER_INVALID_STATE)
         }
 
         return ResponseEntity

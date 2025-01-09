@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.domain.order
 
 import jakarta.persistence.*
+import kr.hhplus.be.server.common.constant.ErrorCode
+import kr.hhplus.be.server.common.exception.BusinessException
 import kr.hhplus.be.server.common.model.BaseEntity
 import kr.hhplus.be.server.domain.user.User
 import org.hibernate.annotations.Comment
@@ -18,8 +20,19 @@ class Order(
     @Column(name = "status", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     @Comment("주문 상태")
-    val status: OrderStatus = OrderStatus.PENDING,
+    var status: OrderStatus = OrderStatus.PENDING,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-) : BaseEntity()
+) : BaseEntity() {
+    fun ensureNotPaid() {
+        if (status != OrderStatus.PENDING) {
+            throw BusinessException(ErrorCode.ORDER_ALREADY_PROCESSED)
+        }
+    }
+
+    fun confirm() {
+        ensureNotPaid()
+        status = OrderStatus.CONFIRMED
+    }
+}

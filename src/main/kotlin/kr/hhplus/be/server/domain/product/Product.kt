@@ -28,4 +28,9 @@ class Product(
     fun ensureAvailableStock(quantity: Int) {
         if (stock < quantity) throw BusinessException(ErrorCode.PRODUCT_OUT_OF_STOCK)
     }
+
+    fun reduceStock(quantity: Int) {
+        ensureAvailableStock(quantity)
+        stock -= quantity
+    }
 }

@@ -48,4 +48,30 @@ class UserTest {
                 .hasFieldOrPropertyWithValue("code", ErrorCode.USER_BALANCE_EXCEEDS_LIMIT)
         }
     }
+
+    @Nested
+    @DisplayName("잔액 사용")
+    inner class Use {
+        @Test
+        @DisplayName("[성공] 정상적인 금액으로 사용")
+        fun test_use_success() {
+            val user = UserFixture.create(balance = 10_000L)
+            val want = 5_000L
+
+            user.use(want)
+
+            assertThat(user.balance).isEqualTo(5_000L)
+        }
+
+        @Test
+        @DisplayName("[실패] 사용 금액이 잔액을 초과할 경우 BusinessException 발생")
+        fun test_use_fail_exceedsBalance() {
+            val user = UserFixture.create(balance = 10_000L)
+            val want = 15_000L
+
+            assertThatThrownBy { user.use(want) }
+                .isInstanceOf(BusinessException::class.java)
+                .hasFieldOrPropertyWithValue("code", ErrorCode.INSUFFICIENT_BALANCE)
+        }
+    }
 }

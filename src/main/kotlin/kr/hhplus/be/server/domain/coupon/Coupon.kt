@@ -67,6 +67,14 @@ class Coupon(
         status = CouponStatus.RESERVED
         this.order = order
     }
+
+    fun use() {
+        if (status != CouponStatus.RESERVED) {
+            throw BusinessException(ErrorCode.COUPON_NOT_ORDER_RESERVED)
+        }
+
+        status = CouponStatus.USED
+    }
 }
 
 fun Coupon?.checkAlreadyIssue() {

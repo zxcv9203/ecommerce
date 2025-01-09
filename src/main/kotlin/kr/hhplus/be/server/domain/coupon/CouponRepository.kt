@@ -18,4 +18,6 @@ interface CouponRepository {
     ): Slice<CouponResponse>
 
     fun findById(couponId: Long): Coupon?
+
+    fun findByOrderId(orderId: Long): Coupon?
 }

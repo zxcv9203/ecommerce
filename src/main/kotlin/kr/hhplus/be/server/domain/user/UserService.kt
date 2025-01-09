@@ -2,6 +2,7 @@ package kr.hhplus.be.server.domain.user
 
 import kr.hhplus.be.server.api.user.response.UserBalanceResponse
 import kr.hhplus.be.server.application.user.command.ChargeBalanceCommand
+import kr.hhplus.be.server.application.user.command.UseBalanceCommand
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.exception.BusinessException
 import org.springframework.dao.OptimisticLockingFailureException
@@ -35,5 +36,23 @@ class UserService(
             .also { balanceHistoryRepository.save(it) }
 
         return UserBalanceResponse(savedUser.balance)
+    }
+
+    @Transactional
+    fun useBalance(command: UseBalanceCommand) {
+        val useBalanceUser =
+            getById(command.userId)
+                .apply { this.use(command.amount) }
+
+        val savedUser =
+            try {
+                userRepository.save(useBalanceUser)
+            } catch (e: OptimisticLockingFailureException) {
+                throw BusinessException(ErrorCode.USER_BALANCE_USE_FAILED)
+            }
+
+        BalanceHistory
+            .createByUse(savedUser, command.amount)
+            .also { balanceHistoryRepository.save(it) }
     }
 }

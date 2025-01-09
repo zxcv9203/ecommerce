@@ -6,6 +6,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import kr.hhplus.be.server.application.user.command.ChargeBalanceCommand
+import kr.hhplus.be.server.application.user.command.UseBalanceCommand
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.exception.BusinessException
 import kr.hhplus.be.server.stub.UserFixture
@@ -81,6 +82,46 @@ class UserServiceTest {
             assertThatThrownBy { userService.chargeBalance(command) }
                 .isInstanceOf(BusinessException::class.java)
                 .hasFieldOrPropertyWithValue("code", ErrorCode.USER_BALANCE_CHARGE_FAILED)
+        }
+    }
+
+    @Nested
+    @DisplayName("포인트 사용")
+    inner class UseBalance {
+        @Test
+        @DisplayName("[성공] 잔액 사용에 성공한다.")
+        fun test_useBalance() {
+            val userId = 1L
+            val initialBalance = 50_000L
+            val useAmount = 10_000L
+            val updatedBalance = initialBalance - useAmount
+            val command = UseBalanceCommand(userId, useAmount)
+            val user = UserFixture.create(balance = initialBalance)
+            val savedUser = UserFixture.create(balance = updatedBalance)
+
+            every { userService.getById(userId) } returns user
+            every { userRepository.save(user) } returns savedUser
+            every { balanceHistoryRepository.save(any()) } returns mockk()
+
+            userService.useBalance(command)
+
+            assertThat(user.balance).isEqualTo(updatedBalance)
+        }
+
+        @Test
+        @DisplayName("[실패] 잔액 사용 중 충돌이 발생하면 BusinessException 발생")
+        fun test_useBalance_optimisticLockException() {
+            val userId = 1L
+            val useAmount = 10_000L
+            val command = UseBalanceCommand(userId, useAmount)
+            val user = UserFixture.create(id = userId, balance = 50_000L)
+
+            every { userService.getById(userId) } returns user
+            every { userRepository.save(user) } throws OptimisticLockingFailureException("")
+
+            assertThatThrownBy { userService.useBalance(command) }
+                .isInstanceOf(BusinessException::class.java)
+                .hasFieldOrPropertyWithValue("code", ErrorCode.USER_BALANCE_USE_FAILED)
         }
     }
 }

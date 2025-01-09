@@ -9,4 +9,6 @@ class OrderItemRepositoryImpl(
     private val jpaOrderItemRepository: JpaOrderItemRepository,
 ) : OrderItemRepository {
     override fun saveAll(orderItems: List<OrderItem>): List<OrderItem> = jpaOrderItemRepository.saveAll(orderItems)
+
+    override fun findByOrderId(orderId: Long): List<OrderItem> = jpaOrderItemRepository.findByOrderId(orderId)
 }

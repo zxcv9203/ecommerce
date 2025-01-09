@@ -40,6 +40,11 @@ class User(
 
     override fun hashCode(): Int = id.hashCode()
 
+    fun use(amount: Long) {
+        if (balance - amount < 0) throw BusinessException(ErrorCode.INSUFFICIENT_BALANCE)
+        balance -= amount
+    }
+
     companion object {
         const val MINIMUM_BALANCE = 10_000L
         const val MAXIMUM_BALANCE = 10_000_000L

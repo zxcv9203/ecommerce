@@ -128,4 +128,30 @@ class CouponTest {
                 .hasFieldOrPropertyWithValue("code", ErrorCode.COUPON_ALREADY_USED)
         }
     }
+
+    @Nested
+    @DisplayName("쿠폰 사용")
+    inner class Use {
+        @Test
+        @DisplayName("[성공] 쿠폰을 사용 상태로 변경합니다.")
+        fun testUseSuccess() {
+            val coupon = CouponFixture.create(status = CouponStatus.RESERVED)
+
+            coupon.use()
+
+            assertThat(coupon.status).isEqualTo(CouponStatus.USED)
+        }
+
+        @ParameterizedTest(name = "{0}")
+        @ValueSource(strings = ["ACTIVE", "USED", "CANCELLED"])
+        @DisplayName("[실패] 쿠폰이 사용 불가능한 상태라면 BusinessException 발생")
+        fun testUseFail(status: String) {
+            val couponStatus = CouponStatus.valueOf(status)
+            val coupon = CouponFixture.create(status = couponStatus)
+
+            assertThatThrownBy { coupon.use() }
+                .isInstanceOf(BusinessException::class.java)
+                .hasFieldOrPropertyWithValue("code", ErrorCode.COUPON_NOT_ORDER_RESERVED)
+        }
+    }
 }
