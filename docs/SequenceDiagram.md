@@ -298,15 +298,3 @@ sequenceDiagram
     Product -->> API: 인기 상품 목록 반환
     API -->> User: 인기 상품 목록 반환
 ```
-
-## 상위 상품 갱신을 위한 스케줄링
-
-```mermaid
-sequenceDiagram
-    participant Scheduler as 스케줄러
-    participant API as 상위 상품 저장 서비스
-    participant Product as 상품 도메인
-    Scheduler ->> API: 최근 3일간 결제 완료된 상품 5개 정보 요청 (매 00시 00분)
-    API -->> Scheduler: 상품 목록 반환
-    Scheduler ->> Product: 인기 상품 목록 저장
-```

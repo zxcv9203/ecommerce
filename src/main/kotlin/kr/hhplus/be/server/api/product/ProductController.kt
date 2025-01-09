@@ -75,11 +75,11 @@ class ProductController : ProductApi {
     override fun findPopularProducts(): ResponseEntity<CustomResponse<PopularProductsResponse>> {
         val products =
             listOf(
-                PopularProductResponse(1, 1, "상품 A", 12000, 150),
-                PopularProductResponse(2, 2, "상품 B", 8000, 120),
-                PopularProductResponse(3, 3, "상품 C", 5000, 100),
-                PopularProductResponse(4, 4, "상품 D", 15000, 80),
-                PopularProductResponse(5, 5, "상품 E", 7000, 60),
+                PopularProductResponse(1, "상품 A", 12000, 150),
+                PopularProductResponse(2, "상품 B", 8000, 120),
+                PopularProductResponse(3, "상품 C", 5000, 100),
+                PopularProductResponse(4, "상품 D", 15000, 80),
+                PopularProductResponse(5, "상품 E", 7000, 60),
             )
 
         return ResponseEntity

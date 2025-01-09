@@ -517,35 +517,30 @@ Mock API에서는 userId가 1인 사용자만 정상적으로 요청이 가능�
     "products": [
       {
         "id": 1,
-        "rank": 1,
         "name": "상품 A",
         "price": 12000,
         "totalSales": 150
       },
       {
         "id": 2,
-        "rank": 2,
         "name": "상품 B",
         "price": 8000,
         "totalSales": 120
       },
       {
         "id": 3,
-        "rank": 3,
         "name": "상품 C",
         "price": 5000,
         "totalSales": 100
       },
       {
         "id": 4,
-        "rank": 4,
         "name": "상품 D",
         "price": 15000,
         "totalSales": 80
       },
       {
         "id": 5,
-        "rank": 5,
         "name": "상품 E",
         "price": 7000,
         "totalSales": 60

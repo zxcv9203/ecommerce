@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.product
 
+import kr.hhplus.be.server.api.product.response.PopularProductResponse
 import kr.hhplus.be.server.api.product.response.ProductResponse
 import kr.hhplus.be.server.api.product.response.toResponse
 import kr.hhplus.be.server.application.order.command.OrderItemCommand
@@ -49,4 +50,6 @@ class ProductService(
 
         productRepository.saveAll(products)
     }
+
+    fun findPopularProducts(): List<PopularProductResponse> = productRepository.findPopularProducts()
 }
