@@ -37,7 +37,7 @@ object CouponFixture {
         user: User = UserFixture.create(),
         status: CouponStatus = CouponStatus.ACTIVE,
         order: Order? = null,
-        id: Long = 1,
+        id: Long = 0,
     ) = Coupon(
         policy = policy,
         user = user,

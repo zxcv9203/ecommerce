@@ -333,8 +333,7 @@ Mock API에서는 userId가 1인 사용자만 정상적으로 요청이 가능�
   "code": 201,
   "message": "주문이 성공적으로 생성되었습니다.",
   "data": {
-    "orderId": 1,
-    "totalPrice": 23000
+    "orderId": 1
   }
 }
 ```

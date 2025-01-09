@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.dao.OptimisticLockingFailureException
+import org.springframework.orm.ObjectOptimisticLockingFailureException
 
 @ExtendWith(MockKExtension::class)
 class CouponServiceTest {
@@ -70,7 +71,7 @@ class CouponServiceTest {
             val coupon = CouponFixture.create()
             val order = OrderFixture.create()
 
-            every { couponRepository.save(coupon) } throws OptimisticLockingFailureException("")
+            every { couponRepository.save(coupon) } throws ObjectOptimisticLockingFailureException(Coupon::class.java, coupon.id)
 
             assertThatThrownBy { couponService.reserve(coupon, order) }
                 .isInstanceOf(BusinessException::class.java)
