@@ -5,4 +5,6 @@ import org.springframework.data.domain.Slice
 
 interface ProductRepository {
     fun findAll(pageable: Pageable): Slice<Product>
+
+    fun findAllByIds(ids: List<Long>): List<Product>
 }

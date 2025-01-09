@@ -5,7 +5,6 @@ import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
-import jakarta.persistence.OptimisticLockException
 import kr.hhplus.be.server.application.user.command.ChargeBalanceCommand
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.exception.BusinessException
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.dao.OptimisticLockingFailureException
 
 @ExtendWith(MockKExtension::class)
 class UserServiceTest {
@@ -76,7 +76,7 @@ class UserServiceTest {
             val user = UserFixture.create(id = userId)
 
             every { userService.getById(userId) } returns user
-            every { userRepository.save(user) } throws OptimisticLockException()
+            every { userRepository.save(user) } throws OptimisticLockingFailureException("")
 
             assertThatThrownBy { userService.chargeBalance(command) }
                 .isInstanceOf(BusinessException::class.java)

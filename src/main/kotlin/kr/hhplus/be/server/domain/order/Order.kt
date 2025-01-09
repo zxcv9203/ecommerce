@@ -18,7 +18,7 @@ class Order(
     @Column(name = "status", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     @Comment("주문 상태")
-    val status: OrderStatus,
+    val status: OrderStatus = OrderStatus.PENDING,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,

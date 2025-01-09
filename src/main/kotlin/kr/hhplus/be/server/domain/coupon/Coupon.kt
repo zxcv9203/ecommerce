@@ -22,15 +22,52 @@ class Coupon(
     @Column(name = "status", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     @Comment("쿠폰 상태")
-    val status: CouponStatus,
+    var status: CouponStatus,
     @ManyToOne
     @JoinColumn(name = "order_id")
     @Comment("쿠폰 사용 주문")
-    val order: Order? = null,
+    var order: Order? = null,
+    @Version
+    @Column(name = "version", nullable = false)
+    @Comment("낙관적락을 위한 버전")
+    val version: Long = 0,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-) : BaseEntity()
+) : BaseEntity() {
+    fun ensureOwner(user: User) {
+        if (this.user != user) {
+            throw BusinessException(ErrorCode.COUPON_OWNER_MISMATCH)
+        }
+    }
+
+    fun ensureUsableStatus() {
+        if (status != CouponStatus.ACTIVE) {
+            throw BusinessException(ErrorCode.COUPON_ALREADY_USED)
+        }
+    }
+
+    fun getDiscountedPrice(price: Long): Long {
+        val calculatedPrice =
+            when (policy.discountType) {
+                CouponDiscountType.AMOUNT -> price - policy.discountAmount
+                CouponDiscountType.PERCENT -> (price * (100 - policy.discountAmount) / 100)
+            }
+        if (calculatedPrice <= 0) {
+            throw BusinessException(ErrorCode.ORDER_AMOUNT_INVALID)
+        }
+        return calculatedPrice
+    }
+
+    fun reserve(order: Order) {
+        if (status != CouponStatus.ACTIVE) {
+            throw BusinessException(ErrorCode.COUPON_ALREADY_USED)
+        }
+
+        status = CouponStatus.RESERVED
+        this.order = order
+    }
+}
 
 fun Coupon?.checkAlreadyIssue() {
     if (this != null) {

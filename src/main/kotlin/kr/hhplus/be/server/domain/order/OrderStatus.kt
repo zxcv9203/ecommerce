@@ -1,3 +1,6 @@
 package kr.hhplus.be.server.domain.order
 
-enum class OrderStatus
+enum class OrderStatus {
+    PENDING,
+    CONFIRMED,
+}

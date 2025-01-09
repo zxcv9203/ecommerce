@@ -16,4 +16,6 @@ interface CouponRepository {
         userId: Long,
         pageable: Pageable,
     ): Slice<CouponResponse>
+
+    fun findById(couponId: Long): Coupon?
 }

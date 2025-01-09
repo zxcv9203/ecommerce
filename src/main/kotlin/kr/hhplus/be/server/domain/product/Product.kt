@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.domain.product
 
 import jakarta.persistence.*
+import kr.hhplus.be.server.common.constant.ErrorCode
+import kr.hhplus.be.server.common.exception.BusinessException
 import kr.hhplus.be.server.common.model.BaseEntity
 import org.hibernate.annotations.Comment
 
@@ -22,4 +24,8 @@ class Product(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-) : BaseEntity()
+) : BaseEntity() {
+    fun ensureAvailableStock(quantity: Int) {
+        if (stock < quantity) throw BusinessException(ErrorCode.PRODUCT_OUT_OF_STOCK)
+    }
+}

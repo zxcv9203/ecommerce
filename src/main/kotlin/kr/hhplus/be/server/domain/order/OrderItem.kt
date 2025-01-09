@@ -2,7 +2,6 @@ package kr.hhplus.be.server.domain.order
 
 import jakarta.persistence.*
 import kr.hhplus.be.server.common.model.BaseEntity
-import kr.hhplus.be.server.domain.product.Product
 import org.hibernate.annotations.Comment
 
 @Entity
@@ -12,10 +11,9 @@ class OrderItem(
     @JoinColumn(name = "order_id", nullable = false)
     @Comment("주문")
     val order: Order,
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    @Comment("상품")
-    val product: Product,
+    @Column(name = "product_id", nullable = false)
+    @Comment("상품 ID")
+    val productId: Long,
     @Column(name = "count", nullable = false)
     @Comment("상품 수량")
     val count: Int,

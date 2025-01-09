@@ -68,6 +68,7 @@ CREATE TABLE IF NOT EXISTS coupons
     user_id    BIGINT      NOT NULL COMMENT '사용자 ID',
     order_id   BIGINT DEFAULT NULL COMMENT '주문 ID',
     status     VARCHAR(20) NOT NULL COMMENT '쿠폰 상태',
+    version    BIGINT      NOT NULL COMMENT '낙관적락을 위한 버전',
     created_at DATETIME    NOT NULL COMMENT '생성 시간',
     updated_at DATETIME    NOT NULL COMMENT '수정 시간',
     UNIQUE KEY uk_policy_user (policy_id, user_id)

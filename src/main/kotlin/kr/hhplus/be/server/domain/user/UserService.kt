@@ -1,10 +1,10 @@
 package kr.hhplus.be.server.domain.user
 
-import jakarta.persistence.OptimisticLockException
 import kr.hhplus.be.server.api.user.response.UserBalanceResponse
 import kr.hhplus.be.server.application.user.command.ChargeBalanceCommand
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.exception.BusinessException
+import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -26,7 +26,7 @@ class UserService(
         val savedUser =
             try {
                 userRepository.save(chargeBalanceUser)
-            } catch (e: OptimisticLockException) {
+            } catch (e: OptimisticLockingFailureException) {
                 throw BusinessException(ErrorCode.USER_BALANCE_CHARGE_FAILED)
             }
 

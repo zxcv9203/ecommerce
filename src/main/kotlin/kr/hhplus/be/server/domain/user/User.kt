@@ -29,6 +29,17 @@ class User(
         balance += amount
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is User) return false
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int = id.hashCode()
+
     companion object {
         const val MINIMUM_BALANCE = 10_000L
         const val MAXIMUM_BALANCE = 10_000_000L

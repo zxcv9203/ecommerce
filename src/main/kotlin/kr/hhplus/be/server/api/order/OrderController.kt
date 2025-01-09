@@ -39,13 +39,11 @@ class OrderController : OrderApi {
 
         val validCouponId = 1L
         val usedCouponId = 2L
-        val expiredCouponId = 3L
         var totalPrice = 0
 
         when (request.couponId) {
             validCouponId -> totalPrice -= 5000
             usedCouponId -> throw BusinessException(ErrorCode.COUPON_ALREADY_USED)
-            expiredCouponId -> throw BusinessException(ErrorCode.COUPON_EXPIRED)
             else -> if (request.couponId != null) throw BusinessException(ErrorCode.COUPON_NOT_FOUND)
         }
 
@@ -65,7 +63,6 @@ class OrderController : OrderApi {
         val response =
             OrderResponse(
                 orderId = 1L,
-                totalPrice = totalPrice,
             )
 
         return ResponseEntity

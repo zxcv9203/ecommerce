@@ -145,7 +145,6 @@ sequenceDiagram
     participant OrderAPI as 주문 생성 서비스
     participant Product as 상품 도메인
     participant Order as 주문 도메인
-
     User ->> OrderAPI: 주문 요청 (쿠폰 없이)
     OrderAPI ->> Product: 상품 존재 여부 확인
     alt 상품이 존재하지 않음
@@ -160,13 +159,8 @@ sequenceDiagram
         else 재고 충분
             Product -->> OrderAPI: 상품 재고 확인 완료
             OrderAPI ->> Order: 주문 생성 요청
-            alt 결제 금액 0원 이하
-                Order -->> OrderAPI: 예외 발생
-                OrderAPI -->> User: "주문 금액은 0원 이하일 수 없습니다."
-            else 결제 금액 적합
-                Order -->> OrderAPI: 주문 생성 완료 (주문 ID 반환)
-                OrderAPI -->> User: "주문 생성 완료"
-            end
+            Order -->> OrderAPI: 주문 생성 완료 (주문 ID 반환)
+            OrderAPI -->> User: "주문 생성 완료"
         end
     end
 
