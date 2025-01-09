@@ -6,7 +6,6 @@ import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.exception.BusinessException
 import kr.hhplus.be.server.domain.order.Order
 import kr.hhplus.be.server.domain.user.User
-import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.data.domain.Slice
 import org.springframework.orm.ObjectOptimisticLockingFailureException
 import org.springframework.stereotype.Service
@@ -65,7 +64,7 @@ class CouponService(
         coupon.use()
         try {
             couponRepository.save(coupon)
-        } catch (e: OptimisticLockingFailureException) {
+        } catch (e: ObjectOptimisticLockingFailureException) {
             throw BusinessException(ErrorCode.COUPON_USE_FAIL)
         }
     }
