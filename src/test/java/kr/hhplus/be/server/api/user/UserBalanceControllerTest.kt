@@ -154,4 +154,37 @@ class UserBalanceControllerTest : IntegrationTest() {
             assertThat(user.balance).isEqualTo(10000 + successCount * amount)
         }
     }
+
+    @Nested
+    @DisplayName("잔액 조회")
+    inner class GetBalance {
+        @Test
+        @DisplayName("[성공] 잔액 조회에 성공합니다.")
+        fun testSuccessGetBalance() {
+            val userId = 1L
+
+            mockMvc
+                .perform(
+                    get("/api/v1/users/{userId}/balance", userId)
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isOk)
+                .andExpect(jsonPath("$.code").value(SuccessCode.USER_BALANCE_QUERY.status.value()))
+                .andExpect(jsonPath("$.message").value(SuccessCode.USER_BALANCE_QUERY.message))
+                .andExpect(jsonPath("$.data.amount").value(10000))
+        }
+
+        @Test
+        @DisplayName("[실패] 사용자가 존재하지 않는 경우 404에러 발생")
+        fun testFailWhenUserNotFound() {
+            val userId = 0L
+
+            mockMvc
+                .perform(
+                    get("/api/v1/users/{userId}/balance", userId)
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isNotFound)
+                .andExpect(jsonPath("$.code").value(ErrorCode.USER_NOT_FOUND.status.value()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.USER_NOT_FOUND.message))
+        }
+    }
 }

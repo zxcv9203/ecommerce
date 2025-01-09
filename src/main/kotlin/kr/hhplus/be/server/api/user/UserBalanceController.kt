@@ -30,12 +30,9 @@ class UserBalanceController(
     @GetMapping
     override fun get(
         @PathVariable userId: Long,
-    ): ResponseEntity<CustomResponse<UserBalanceResponse>> {
-        if (userId != 1L) {
-            throw BusinessException(ErrorCode.USER_NOT_FOUND)
-        }
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(CustomResponse.success(SuccessCode.USER_BALANCE_QUERY, UserBalanceResponse(20000)))
-    }
+    ): ResponseEntity<CustomResponse<UserBalanceResponse>> =
+        userBalanceUseCase
+            .getBalance(userId)
+            .let { CustomResponse.success(SuccessCode.USER_BALANCE_QUERY, it) }
+            .let { ResponseEntity.status(HttpStatus.OK).body(it) }
 }
