@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.api.coupon
 
 import kr.hhplus.be.server.api.coupon.request.IssueCouponRequest
+import kr.hhplus.be.server.api.coupon.response.CouponResponse
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.helper.ConcurrentTestHelper
@@ -11,6 +12,7 @@ import kr.hhplus.be.server.stub.CouponFixture
 import kr.hhplus.be.server.stub.UserFixture
 import kr.hhplus.be.server.template.IntegrationTest
 import org.assertj.core.api.Assertions.assertThat
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -203,6 +206,44 @@ class UserCouponControllerTest : IntegrationTest() {
 
             assertThat(successCount).isEqualTo(10)
             assertThat(failCount).isEqualTo(1)
+        }
+    }
+
+    @Nested
+    @DisplayName("쿠폰 조회")
+    inner class FindAll {
+        @Test
+        @DisplayName("[성공] 사용자의 쿠폰 목록을 조회한다.")
+        fun test_findAll() {
+            val userId = 1L
+
+            mockMvc
+                .perform(
+                    post("/api/v1/users/{userId}/coupons", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(IssueCouponRequest(1L))),
+                )
+            mockMvc
+                .perform(
+                    get("/api/v1/users/{userId}/coupons", userId),
+                ).andExpect(status().isOk)
+                .andExpect(jsonPath("$.code").value(SuccessCode.COUPON_LIST_QUERY.status.value()))
+                .andExpect(jsonPath("$.message").value(SuccessCode.COUPON_LIST_QUERY.message))
+                .andExpect(jsonPath("$.data.coupons", Matchers.hasSize<CouponResponse>(1)))
+                .andExpect(jsonPath("$.data.hasNext").value(false))
+        }
+
+        @Test
+        @DisplayName("[실패] 사용자가 존재하지 않는 경우 404 반환")
+        fun test_fail_when_user_not_found() {
+            val userId = 0L
+
+            mockMvc
+                .perform(
+                    get("/api/v1/users/{userId}/coupons", userId),
+                ).andExpect(status().isNotFound)
+                .andExpect(jsonPath("$.code").value(ErrorCode.USER_NOT_FOUND.status.value()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.USER_NOT_FOUND.message))
         }
     }
 }
