@@ -6,22 +6,23 @@ import kr.hhplus.be.server.api.coupon.response.CouponsResponse
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.common.exception.BusinessException
-import kr.hhplus.be.server.common.model.ApiResponse
+import kr.hhplus.be.server.common.model.CustomResponse
+import kr.hhplus.be.server.domain.coupon.CouponDiscountType
+import kr.hhplus.be.server.domain.coupon.CouponStatus
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/v1/users/{userId}/coupons")
-class UserCouponController {
+class UserCouponController : UserCouponApi {
     @GetMapping
-    fun findAll(
+    override fun findAll(
         @PathVariable userId: Long,
         pageable: Pageable,
-    ): ResponseEntity<ApiResponse<CouponsResponse>> {
+    ): ResponseEntity<CustomResponse<CouponsResponse>> {
         if (userId != 1L) {
             throw BusinessException(ErrorCode.USER_NOT_FOUND)
         }
@@ -31,101 +32,101 @@ class UserCouponController {
                 CouponResponse(
                     1,
                     101,
-                    "AMOUNT",
+                    "쿠폰 A",
+                    "신규 가입 시 제공되는 감사 쿠폰",
+                    CouponDiscountType.AMOUNT,
                     5000,
-                    "ACTIVE",
-                    LocalDateTime.of(2025, 1, 1, 10, 0),
-                    LocalDateTime.of(2025, 1, 15, 23, 59),
+                    CouponStatus.ACTIVE,
                 ),
                 CouponResponse(
                     2,
                     102,
-                    "PERCENT",
+                    "쿠폰 B",
+                    "신규 가입 시 제공되는 감사 쿠폰",
+                    CouponDiscountType.PERCENT,
                     10,
-                    "USED",
-                    LocalDateTime.of(2024, 12, 20, 10, 0),
-                    LocalDateTime.of(2024, 12, 31, 23, 59),
+                    CouponStatus.USED,
                 ),
                 CouponResponse(
                     3,
                     103,
-                    "AMOUNT",
+                    "쿠폰 C",
+                    "신규 가입 시 제공되는 감사 쿠폰",
+                    CouponDiscountType.AMOUNT,
                     3000,
-                    "EXPIRED",
-                    LocalDateTime.of(2024, 11, 15, 10, 0),
-                    LocalDateTime.of(2024, 11, 30, 23, 59),
+                    CouponStatus.USED,
                 ),
                 CouponResponse(
                     4,
                     104,
-                    "PERCENT",
+                    "쿠폰 D",
+                    "신규 가입 시 제공되는 감사 쿠폰",
+                    CouponDiscountType.PERCENT,
                     15,
-                    "ACTIVE",
-                    LocalDateTime.of(2025, 1, 2, 12, 0),
-                    LocalDateTime.of(2025, 1, 16, 23, 59),
+                    CouponStatus.ACTIVE,
                 ),
                 CouponResponse(
                     5,
                     105,
-                    "AMOUNT",
+                    "쿠폰 E",
+                    "신규 가입 시 제공되는 감사 쿠폰",
+                    CouponDiscountType.AMOUNT,
                     7000,
-                    "ACTIVE",
-                    LocalDateTime.of(2025, 1, 3, 14, 0),
-                    LocalDateTime.of(2025, 1, 17, 23, 59),
+                    CouponStatus.ACTIVE,
                 ),
                 CouponResponse(
                     6,
                     106,
-                    "PERCENT",
+                    "쿠폰 F",
+                    "신규 가입 시 제공되는 감사 쿠폰",
+                    CouponDiscountType.PERCENT,
                     20,
-                    "USED",
-                    LocalDateTime.of(2024, 12, 10, 10, 0),
-                    LocalDateTime.of(2024, 12, 25, 23, 59),
+                    CouponStatus.CANCELLED,
                 ),
                 CouponResponse(
                     7,
                     107,
-                    "AMOUNT",
+                    "쿠폰 G",
+                    "신규 가입 시 제공되는 감사 쿠폰",
+                    CouponDiscountType.AMOUNT,
                     1000,
-                    "EXPIRED",
-                    LocalDateTime.of(2024, 12, 1, 10, 0),
-                    LocalDateTime.of(2024, 12, 5, 23, 59),
+                    CouponStatus.ACTIVE,
                 ),
                 CouponResponse(
                     8,
                     108,
-                    "PERCENT",
+                    "쿠폰 H",
+                    "신규 가입 시 제공되는 감사 쿠폰",
+                    CouponDiscountType.PERCENT,
                     5,
-                    "ACTIVE",
-                    LocalDateTime.of(2025, 1, 5, 15, 0),
-                    LocalDateTime.of(2025, 1, 20, 23, 59),
+                    CouponStatus.ACTIVE,
                 ),
                 CouponResponse(
                     9,
                     109,
-                    "AMOUNT",
+                    "쿠폰 I",
+                    "신규 가입 시 제공되는 감사 쿠폰",
+                    CouponDiscountType.AMOUNT,
                     1500,
-                    "USED",
-                    LocalDateTime.of(2024, 11, 25, 10, 0),
-                    LocalDateTime.of(2024, 12, 1, 23, 59),
+                    CouponStatus.ACTIVE,
                 ),
                 CouponResponse(
                     10,
                     110,
-                    "PERCENT",
+                    "쿠폰 J",
+                    "신규 가입 시 제공되는 감사 쿠폰",
+                    CouponDiscountType.PERCENT,
                     25,
-                    "ACTIVE",
-                    LocalDateTime.of(2025, 1, 6, 16, 0),
-                    LocalDateTime.of(2025, 1, 21, 23, 59),
+                    CouponStatus.ACTIVE,
                 ),
                 CouponResponse(
                     11,
                     111,
-                    "AMOUNT",
+                    "쿠폰 K",
+                    "신규 가입 시 제공되는 감사 쿠폰",
+                    CouponDiscountType.AMOUNT,
                     4500,
-                    "EXPIRED",
-                    LocalDateTime.of(2024, 11, 10, 10, 0),
-                    LocalDateTime.of(2024, 11, 20, 23, 59),
+                    CouponStatus.ACTIVE,
                 ),
             )
 
@@ -141,8 +142,6 @@ class UserCouponController {
                                 when (property) {
                                     "id" -> a.id.compareTo(b.id)
                                     "policyId" -> a.policyId.compareTo(b.policyId)
-                                    "issuedAt" -> a.issuedAt.compareTo(b.issuedAt)
-                                    "expiresAt" -> a.expiresAt.compareTo(b.expiresAt)
                                     "discountValue" -> a.discountValue.compareTo(b.discountValue)
                                     else -> 0
                                 }
@@ -168,14 +167,14 @@ class UserCouponController {
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(ApiResponse.success(SuccessCode.COUPON_LIST_QUERY, response))
+            .body(CustomResponse.success(SuccessCode.COUPON_LIST_QUERY, response))
     }
 
     @PostMapping
-    fun issue(
+    override fun issue(
         @PathVariable userId: Long,
         @RequestBody request: IssueCouponRequest,
-    ): ResponseEntity<ApiResponse<Unit>> {
+    ): ResponseEntity<CustomResponse<Unit>> {
         if (userId != 1L) {
             throw BusinessException(ErrorCode.USER_NOT_FOUND)
         }
@@ -183,7 +182,7 @@ class UserCouponController {
             1L -> {
                 ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(ApiResponse.success(SuccessCode.COUPON_ISSUE_SUCCESS))
+                    .body(CustomResponse.success(SuccessCode.COUPON_ISSUE_SUCCESS))
             }
 
             2L -> {

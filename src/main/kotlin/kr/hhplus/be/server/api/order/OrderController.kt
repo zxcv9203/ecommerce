@@ -5,7 +5,7 @@ import kr.hhplus.be.server.api.order.response.OrderResponse
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.common.exception.BusinessException
-import kr.hhplus.be.server.common.model.ApiResponse
+import kr.hhplus.be.server.common.model.CustomResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/orders")
-class OrderController {
+class OrderController : OrderApi {
     @PostMapping
-    fun order(
+    override fun order(
         @RequestBody request: OrderRequest,
-    ): ResponseEntity<ApiResponse<OrderResponse>> {
+    ): ResponseEntity<CustomResponse<OrderResponse>> {
         if (request.userId != 1L) {
             throw BusinessException(ErrorCode.USER_NOT_FOUND)
         }
@@ -39,13 +39,11 @@ class OrderController {
 
         val validCouponId = 1L
         val usedCouponId = 2L
-        val expiredCouponId = 3L
         var totalPrice = 0
 
         when (request.couponId) {
             validCouponId -> totalPrice -= 5000
             usedCouponId -> throw BusinessException(ErrorCode.COUPON_ALREADY_USED)
-            expiredCouponId -> throw BusinessException(ErrorCode.COUPON_EXPIRED)
             else -> if (request.couponId != null) throw BusinessException(ErrorCode.COUPON_NOT_FOUND)
         }
 
@@ -65,11 +63,10 @@ class OrderController {
         val response =
             OrderResponse(
                 orderId = 1L,
-                totalPrice = totalPrice,
             )
 
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(ApiResponse.success(SuccessCode.ORDER_CREATED, response))
+            .body(CustomResponse.success(SuccessCode.ORDER_CREATED, response))
     }
 }
