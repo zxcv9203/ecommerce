@@ -3,6 +3,7 @@ package kr.hhplus.be.server.api.coupon
 import kr.hhplus.be.server.api.coupon.request.IssueCouponRequest
 import kr.hhplus.be.server.api.coupon.response.CouponResponse
 import kr.hhplus.be.server.api.coupon.response.CouponsResponse
+import kr.hhplus.be.server.application.coupon.CouponUseCase
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.common.exception.BusinessException
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/users/{userId}/coupons")
-class UserCouponController : UserCouponApi {
+class UserCouponController(
+    private val couponUseCase: CouponUseCase,
+) : UserCouponApi {
     @GetMapping
     override fun findAll(
         @PathVariable userId: Long,
@@ -174,32 +177,10 @@ class UserCouponController : UserCouponApi {
     override fun issue(
         @PathVariable userId: Long,
         @RequestBody request: IssueCouponRequest,
-    ): ResponseEntity<CustomResponse<Unit>> {
-        if (userId != 1L) {
-            throw BusinessException(ErrorCode.USER_NOT_FOUND)
-        }
-        return when (request.couponPolicyId) {
-            1L -> {
-                ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(CustomResponse.success(SuccessCode.COUPON_ISSUE_SUCCESS))
-            }
-
-            2L -> {
-                throw BusinessException(ErrorCode.COUPON_ISSUE_EXPIRED)
-            }
-
-            3L -> {
-                throw BusinessException(ErrorCode.COUPON_ALREADY_ISSUED)
-            }
-
-            4L -> {
-                throw BusinessException(ErrorCode.COUPON_OUT_OF_COUNT)
-            }
-
-            else -> {
-                throw BusinessException(ErrorCode.COUPON_NOT_FOUND)
-            }
-        }
-    }
+    ): ResponseEntity<CustomResponse<Unit>> =
+        request
+            .toCommand(userId)
+            .let { couponUseCase.issue(it) }
+            .let { CustomResponse.success(SuccessCode.COUPON_ISSUE_SUCCESS, it) }
+            .let { ResponseEntity.status(HttpStatus.CREATED).body(it) }
 }
