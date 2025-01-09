@@ -7,7 +7,7 @@ import kr.hhplus.be.server.domain.user.User
 
 object OrderFixture {
     fun create(
-        id: Long = 1L,
+        id: Long = 0L,
         user: User = UserFixture.create(),
         totalPrice: Long = 1000L,
         status: OrderStatus = OrderStatus.PENDING,

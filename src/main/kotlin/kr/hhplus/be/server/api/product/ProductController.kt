@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.api.product
 
-import kr.hhplus.be.server.api.product.response.PopularProductResponse
 import kr.hhplus.be.server.api.product.response.PopularProductsResponse
 import kr.hhplus.be.server.api.product.response.ProductsResponse
 import kr.hhplus.be.server.application.product.ProductUseCase
@@ -26,18 +25,9 @@ class ProductController(
             .let { ResponseEntity.status(HttpStatus.OK).body(it) }
 
     @GetMapping("/popular-products")
-    override fun findPopularProducts(): ResponseEntity<CustomResponse<PopularProductsResponse>> {
-        val products =
-            listOf(
-                PopularProductResponse(1, "상품 A", 12000, 150),
-                PopularProductResponse(2, "상품 B", 8000, 120),
-                PopularProductResponse(3, "상품 C", 5000, 100),
-                PopularProductResponse(4, "상품 D", 15000, 80),
-                PopularProductResponse(5, "상품 E", 7000, 60),
-            )
-
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body(CustomResponse.success(SuccessCode.POPULAR_PRODUCT_QUERY, PopularProductsResponse(products)))
-    }
+    override fun findPopularProducts(): ResponseEntity<CustomResponse<PopularProductsResponse>> =
+        productUseCase
+            .findPopularProducts()
+            .let { CustomResponse.success(SuccessCode.POPULAR_PRODUCT_QUERY, it) }
+            .let { ResponseEntity.status(HttpStatus.OK).body(it) }
 }

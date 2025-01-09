@@ -32,6 +32,7 @@ interface JpaProductRepository : JpaRepository<Product, Long> {
     WHERE o.status = 'CONFIRMED'
     GROUP BY p.id, p.name, p.price
     ORDER BY SUM(oi.count) DESC
+    LIMIT 5
     """,
     )
     fun findPopularProducts(): List<PopularProductResponse>
