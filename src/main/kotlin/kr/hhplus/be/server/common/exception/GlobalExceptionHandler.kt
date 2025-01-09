@@ -80,7 +80,7 @@ class GlobalExceptionHandler {
         log.debug("[handleBusinessException] ${e.code.message}", e)
 
         return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
+            .status(e.code.status)
             .body(CustomResponse.fail(e.code))
     }
 
