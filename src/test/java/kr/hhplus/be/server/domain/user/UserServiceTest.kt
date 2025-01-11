@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.dao.OptimisticLockingFailureException
+import org.springframework.orm.ObjectOptimisticLockingFailureException
 
 @ExtendWith(MockKExtension::class)
 class UserServiceTest {
@@ -77,7 +78,7 @@ class UserServiceTest {
             val user = UserFixture.create(id = userId)
 
             every { userService.getById(userId) } returns user
-            every { userRepository.save(user) } throws OptimisticLockingFailureException("")
+            every { userRepository.save(user) } throws ObjectOptimisticLockingFailureException(User::class.java, userId)
 
             assertThatThrownBy { userService.chargeBalance(command) }
                 .isInstanceOf(BusinessException::class.java)

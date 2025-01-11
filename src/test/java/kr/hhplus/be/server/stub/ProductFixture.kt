@@ -4,7 +4,7 @@ import kr.hhplus.be.server.domain.product.Product
 
 object ProductFixture {
     fun create(
-        id: Long = 1L,
+        id: Long = 0L,
         name: String = "product",
         price: Long = 1000L,
         description: String = "description",
