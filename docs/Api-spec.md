@@ -155,6 +155,7 @@ Mock API에서는 couponPolicyId가 1인 요청만 정상적으로 요청이 가
 Mock API에서는 couponPolicyId가 2인 요청은 발급기간이 지난 쿠폰입니다.
 Mock API에서는 couponPolicyId가 3인 요청은 이미 발급된 쿠폰입니다.
 Mock API에서는 couponPolicyId가 4인 요청은 발급 가능 개수를 초과한 쿠폰입니다.
+
 ### 응답
 
 #### 성공
@@ -217,6 +218,17 @@ Mock API에서는 couponPolicyId가 4인 요청은 발급 가능 개수를 초�
 }
 ```
 
+#### 실패 (쿠폰 발급 기간이 도달하지 않은 경우)
+
+```json
+{
+  "code": 400,
+  "message": "쿠폰 발급 기간이 아직 시작되지 않았습니다.",
+  "data": {}
+}
+
+```
+
 ## 5. 내 쿠폰 목록 조회 API
 
 ### 요청
@@ -247,7 +259,9 @@ Mock API에서는 userId가 1인 사용자만 정상적으로 요청이 가능�
       {
         "id": 1,
         "policyId": 1,
-        "discountType": "AMOUNT",
+        "name": "쿠폰 A",
+        "description": "쿠폰 A 입니다.",
+        "discountType": "FIXED",
         "discountValue": 5000,
         "status": "ACTIVE",
         "issuedAt": "2025-01-01T10:00:00Z",
@@ -256,6 +270,8 @@ Mock API에서는 userId가 1인 사용자만 정상적으로 요청이 가능�
       {
         "id": 2,
         "policyId": 2,
+        "name": "쿠폰 B",
+        "description": "쿠폰 B 입니다.",
         "discountType": "PERCENT",
         "discountValue": 10,
         "status": "USED",
@@ -317,8 +333,7 @@ Mock API에서는 userId가 1인 사용자만 정상적으로 요청이 가능�
   "code": 201,
   "message": "주문이 성공적으로 생성되었습니다.",
   "data": {
-    "orderId": 1,
-    "totalPrice": 23000
+    "orderId": 1
   }
 }
 ```
@@ -353,16 +368,6 @@ Mock API에서는 userId가 1인 사용자만 정상적으로 요청이 가능�
 }
 ```
 
-#### 실패 (쿠폰을 전달받았을 때 쿠폰이 만료된 경우)
-
-```json
-{
-  "code": 400,
-  "message": "쿠폰이 만료되었습니다.",
-  "data": {}
-}
-```
-
 #### 실패 (쿠폰을 전달받았을 때 쿠폰이 사용된 경우)
 
 ```json
@@ -393,6 +398,24 @@ Mock API에서는 userId가 1인 사용자만 정상적으로 요청이 가능�
 }
 ```
 
+#### 실패 (내가 보유한 쿠폰이 아닌 경우)
+
+```json
+{
+  "code": 400,
+  "message": "쿠폰 소유자가 아닙니다.",
+  "data": {}
+}
+```
+#### 실패 (쿠폰 사용중 충돌이 발생한 경우)
+
+```json
+{
+  "code": 400,
+  "message": "쿠폰 사용에 실패했습니다. 다시 시도해주세요.",
+  "data": {}
+}
+```
 ## 7. 결제 API
 
 ### 요청
@@ -493,35 +516,30 @@ Mock API에서는 userId가 1인 사용자만 정상적으로 요청이 가능�
     "products": [
       {
         "id": 1,
-        "rank": 1,
         "name": "상품 A",
         "price": 12000,
         "totalSales": 150
       },
       {
         "id": 2,
-        "rank": 2,
         "name": "상품 B",
         "price": 8000,
         "totalSales": 120
       },
       {
         "id": 3,
-        "rank": 3,
         "name": "상품 C",
         "price": 5000,
         "totalSales": 100
       },
       {
         "id": 4,
-        "rank": 4,
         "name": "상품 D",
         "price": 15000,
         "totalSales": 80
       },
       {
         "id": 5,
-        "rank": 5,
         "name": "상품 E",
         "price": 7000,
         "totalSales": 60

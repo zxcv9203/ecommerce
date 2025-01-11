@@ -145,7 +145,6 @@ sequenceDiagram
     participant OrderAPI as 주문 생성 서비스
     participant Product as 상품 도메인
     participant Order as 주문 도메인
-
     User ->> OrderAPI: 주문 요청 (쿠폰 없이)
     OrderAPI ->> Product: 상품 존재 여부 확인
     alt 상품이 존재하지 않음
@@ -160,13 +159,8 @@ sequenceDiagram
         else 재고 충분
             Product -->> OrderAPI: 상품 재고 확인 완료
             OrderAPI ->> Order: 주문 생성 요청
-            alt 결제 금액 0원 이하
-                Order -->> OrderAPI: 예외 발생
-                OrderAPI -->> User: "주문 금액은 0원 이하일 수 없습니다."
-            else 결제 금액 적합
-                Order -->> OrderAPI: 주문 생성 완료 (주문 ID 반환)
-                OrderAPI -->> User: "주문 생성 완료"
-            end
+            Order -->> OrderAPI: 주문 생성 완료 (주문 ID 반환)
+            OrderAPI -->> User: "주문 생성 완료"
         end
     end
 
@@ -188,9 +182,9 @@ sequenceDiagram
     else 쿠폰 내 것이 아님
         Coupon -->> OrderAPI: 예외 발생
         OrderAPI -->> User: "쿠폰 소유자가 아닙니다"
-    else 쿠폰 만료됨 또는 이미 사용됨
+    else 쿠폰 이미 사용됨
         Coupon -->> OrderAPI: 예외 발생
-        OrderAPI -->> User: "쿠폰이 만료되었거나 이미 사용되었습니다"
+        OrderAPI -->> User: "쿠폰이 이미 사용되었습니다"
     else 쿠폰 유효
         Coupon -->> OrderAPI: 쿠폰 확인 완료
         OrderAPI ->> Product: 상품 존재 여부 확인
@@ -303,16 +297,4 @@ sequenceDiagram
     User ->> API: 인기 상품 조회
     Product -->> API: 인기 상품 목록 반환
     API -->> User: 인기 상품 목록 반환
-```
-
-## 상위 상품 갱신을 위한 스케줄링
-
-```mermaid
-sequenceDiagram
-    participant Scheduler as 스케줄러
-    participant API as 상위 상품 저장 서비스
-    participant Product as 상품 도메인
-    Scheduler ->> API: 최근 3일간 결제 완료된 상품 5개 정보 요청 (매 00시 00분)
-    API -->> Scheduler: 상품 목록 반환
-    Scheduler ->> Product: 인기 상품 목록 저장
 ```

@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.common.exception
 
 import kr.hhplus.be.server.common.constant.ErrorCode
-import kr.hhplus.be.server.common.model.ApiResponse
+import kr.hhplus.be.server.common.model.CustomResponse
 import org.slf4j.LoggerFactory
 import org.springframework.beans.ConversionNotSupportedException
 import org.springframework.beans.TypeMismatchException
@@ -33,7 +33,7 @@ class GlobalExceptionHandler {
     private val log = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
-    fun handleHttpMessageNotReadableException(e: HttpMessageNotReadableException): ResponseEntity<ApiResponse<Unit>> {
+    fun handleHttpMessageNotReadableException(e: HttpMessageNotReadableException): ResponseEntity<CustomResponse<Unit>> {
         log.debug("[handleHttpMessageNotReadableException] ${ErrorCode.INVALID_REQUEST.message}", e)
 
         val code =
@@ -44,7 +44,7 @@ class GlobalExceptionHandler {
 
         return ResponseEntity
             .status(code.status)
-            .body(ApiResponse.fail(code))
+            .body(CustomResponse.fail(code))
     }
 
     @ExceptionHandler(
@@ -68,27 +68,27 @@ class GlobalExceptionHandler {
         MethodValidationException::class,
         BindException::class,
     )
-    fun handleResponseEntityException(e: Exception): ResponseEntity<ApiResponse<Unit>> {
+    fun handleResponseEntityException(e: Exception): ResponseEntity<CustomResponse<Unit>> {
         log.debug("[handleResponseEntityException] ${ErrorCode.INVALID_REQUEST.message}", e)
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
-            .body(ApiResponse.fail(ErrorCode.INVALID_REQUEST))
+            .body(CustomResponse.fail(ErrorCode.INVALID_REQUEST))
     }
 
     @ExceptionHandler(BusinessException::class)
-    fun handleBusinessException(e: BusinessException): ResponseEntity<ApiResponse<Unit>> {
+    fun handleBusinessException(e: BusinessException): ResponseEntity<CustomResponse<Unit>> {
         log.debug("[handleBusinessException] ${e.code.message}", e)
 
         return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(ApiResponse.fail(e.code))
+            .status(e.code.status)
+            .body(CustomResponse.fail(e.code))
     }
 
     @ExceptionHandler(Exception::class)
-    fun handleException(e: Exception): ResponseEntity<ApiResponse<Unit>> {
+    fun handleException(e: Exception): ResponseEntity<CustomResponse<Unit>> {
         log.error("[handleException]", e)
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(ApiResponse.fail(ErrorCode.INTERNAL_SERVER_ERROR))
+            .body(CustomResponse.fail(ErrorCode.INTERNAL_SERVER_ERROR))
     }
 }
