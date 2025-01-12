@@ -44,7 +44,7 @@ class UserService(
         val useBalanceUser =
             getById(command.userId)
                 .apply { this.use(command.amount) }
-
+        
         val savedUser =
             try {
                 userRepository.save(useBalanceUser)

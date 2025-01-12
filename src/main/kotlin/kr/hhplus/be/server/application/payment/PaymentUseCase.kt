@@ -4,6 +4,7 @@ import kr.hhplus.be.server.application.order.command.toCommand
 import kr.hhplus.be.server.application.payment.command.PaymentCommand
 import kr.hhplus.be.server.application.user.command.toUseBalanceCommand
 import kr.hhplus.be.server.domain.coupon.CouponService
+import kr.hhplus.be.server.domain.discount.DiscountService
 import kr.hhplus.be.server.domain.order.OrderService
 import kr.hhplus.be.server.domain.payment.PaymentService
 import kr.hhplus.be.server.domain.product.ProductService
@@ -33,11 +34,10 @@ class PaymentUseCase(
                 .map { it.toCommand() }
 
         val coupon = couponService.findByOrderId(order.id)
-        val payPrice = coupon?.getDiscountedPrice(order.totalPrice) ?: order.totalPrice
-        userService.useBalance(user.toUseBalanceCommand(payPrice))
+        userService.useBalance(user.toUseBalanceCommand(order.discountPrice))
         coupon?.let { couponService.use(it) }
         productService.reduceStock(orderItems)
-        paymentService.pay(order, payPrice)
+        paymentService.pay(order)
         orderService.confirm(order)
     }
 }

@@ -5,8 +5,8 @@ import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.domain.order.OrderStatus
 import kr.hhplus.be.server.helper.ConcurrentTestHelper
-import kr.hhplus.be.server.infrastructure.persistence.order.JpaOrderItemRepository
 import kr.hhplus.be.server.infrastructure.persistence.order.DataJpaOrderRepository
+import kr.hhplus.be.server.infrastructure.persistence.order.JpaOrderItemRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.DataJpaProductRepository
 import kr.hhplus.be.server.infrastructure.persistence.user.DataJpaUserRepository
 import kr.hhplus.be.server.stub.OrderFixture
@@ -55,24 +55,62 @@ class PaymentControllerTest : IntegrationTest() {
             )
         dataJpaProductRepository.saveAllAndFlush(products)
 
-        val pendingOrder = OrderFixture.create(id = 0L, user = user, status = OrderStatus.PENDING, totalPrice = 1000)
+        val pendingOrder =
+            OrderFixture.create(
+                id = 0L,
+                user = user,
+                status = OrderStatus.PENDING,
+                totalPrice = 1000,
+                discountPrice = 1000,
+            )
         dataJpaOrderRepository.saveAndFlush(pendingOrder)
 
         val completedOrder =
-            OrderFixture.create(id = 0L, user = user, status = OrderStatus.CONFIRMED, totalPrice = 2000)
+            OrderFixture.create(
+                id = 0L,
+                user = user,
+                status = OrderStatus.CONFIRMED,
+                totalPrice = 2000,
+                discountPrice = 2000,
+            )
         dataJpaOrderRepository.saveAndFlush(completedOrder)
 
-        val outOfStockOrder = OrderFixture.create(id = 0L, user = user, status = OrderStatus.PENDING, totalPrice = 3000)
+        val outOfStockOrder =
+            OrderFixture.create(
+                id = 0L,
+                user = user,
+                status = OrderStatus.PENDING,
+                totalPrice = 3000,
+                discountPrice = 3000,
+            )
         dataJpaOrderRepository.saveAndFlush(outOfStockOrder)
         val insufficientBalanceOrder =
-            OrderFixture.create(id = 0L, user = user, status = OrderStatus.PENDING, totalPrice = 100000)
+            OrderFixture.create(
+                id = 0L,
+                user = user,
+                status = OrderStatus.PENDING,
+                totalPrice = 100000,
+                discountPrice = 100000,
+            )
         dataJpaOrderRepository.saveAndFlush(insufficientBalanceOrder)
 
         val product5User1Order =
-            OrderFixture.create(id = 0L, user = user, status = OrderStatus.PENDING, totalPrice = 1000)
+            OrderFixture.create(
+                id = 0L,
+                user = user,
+                status = OrderStatus.PENDING,
+                totalPrice = 1000,
+                discountPrice = 1000,
+            )
         dataJpaOrderRepository.saveAndFlush(product5User1Order)
         val product5User2Order =
-            OrderFixture.create(id = 0L, user = user2, status = OrderStatus.PENDING, totalPrice = 1000)
+            OrderFixture.create(
+                id = 0L,
+                user = user2,
+                status = OrderStatus.PENDING,
+                totalPrice = 1000,
+                discountPrice = 1000,
+            )
         dataJpaOrderRepository.saveAndFlush(product5User2Order)
 
         val orderItems =

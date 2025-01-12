@@ -10,11 +10,13 @@ object OrderFixture {
         id: Long = 0L,
         user: User = UserFixture.create(),
         totalPrice: Long = 1000L,
+        discountPrice: Long = 1000L,
         status: OrderStatus = OrderStatus.PENDING,
     ) = Order(
         id = id,
         user = user,
         totalPrice = totalPrice,
+        discountPrice = discountPrice,
         status = status,
     )
 
