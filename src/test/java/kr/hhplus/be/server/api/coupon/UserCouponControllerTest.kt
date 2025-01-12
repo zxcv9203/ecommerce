@@ -5,9 +5,9 @@ import kr.hhplus.be.server.api.coupon.response.CouponResponse
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.helper.ConcurrentTestHelper
-import kr.hhplus.be.server.infrastructure.persistence.coupon.JpaCouponPolicyRepository
+import kr.hhplus.be.server.infrastructure.persistence.coupon.DataJpaCouponPolicyRepository
 import kr.hhplus.be.server.infrastructure.persistence.coupon.JpaCouponRepository
-import kr.hhplus.be.server.infrastructure.persistence.user.JpaUserRepository
+import kr.hhplus.be.server.infrastructure.persistence.user.DataJpaUserRepository
 import kr.hhplus.be.server.stub.CouponFixture
 import kr.hhplus.be.server.stub.UserFixture
 import kr.hhplus.be.server.template.IntegrationTest
@@ -29,10 +29,10 @@ import java.time.LocalDateTime
 
 class UserCouponControllerTest : IntegrationTest() {
     @Autowired
-    private lateinit var jpaUserRepository: JpaUserRepository
+    private lateinit var dataJpaUserRepository: DataJpaUserRepository
 
     @Autowired
-    private lateinit var jpaCouponPolicyRepository: JpaCouponPolicyRepository
+    private lateinit var dataJpaCouponPolicyRepository: DataJpaCouponPolicyRepository
 
     @Autowired
     private lateinit var jpaCouponRepository: JpaCouponRepository
@@ -40,16 +40,16 @@ class UserCouponControllerTest : IntegrationTest() {
     @BeforeEach
     fun setUp() {
         val users = (1..11L).map { UserFixture.create(id = 0L, name = "user $it") }
-        jpaUserRepository.saveAllAndFlush(users)
+        dataJpaUserRepository.saveAllAndFlush(users)
 
         val couponPolicy = CouponFixture.createPolicy(id = 0L, currentCount = 0)
         val fullIssueCouponPolicy = CouponFixture.createPolicy(id = 0L, totalCount = 1, currentCount = 1)
         val endDateCouponPolicy = CouponFixture.createPolicy(id = 0L, endTime = LocalDateTime.now().minusDays(1))
         val notStartedCouponPolicy = CouponFixture.createPolicy(id = 0L, startTime = LocalDateTime.now().plusDays(1))
-        jpaCouponPolicyRepository.saveAndFlush(couponPolicy)
-        jpaCouponPolicyRepository.saveAndFlush(fullIssueCouponPolicy)
-        jpaCouponPolicyRepository.saveAndFlush(endDateCouponPolicy)
-        jpaCouponPolicyRepository.saveAndFlush(notStartedCouponPolicy)
+        dataJpaCouponPolicyRepository.saveAndFlush(couponPolicy)
+        dataJpaCouponPolicyRepository.saveAndFlush(fullIssueCouponPolicy)
+        dataJpaCouponPolicyRepository.saveAndFlush(endDateCouponPolicy)
+        dataJpaCouponPolicyRepository.saveAndFlush(notStartedCouponPolicy)
     }
 
     @Nested

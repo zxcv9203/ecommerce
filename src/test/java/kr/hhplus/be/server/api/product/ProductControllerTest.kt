@@ -5,8 +5,8 @@ import kr.hhplus.be.server.api.product.response.ProductResponse
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.domain.order.OrderStatus
 import kr.hhplus.be.server.infrastructure.persistence.order.JpaOrderItemRepository
-import kr.hhplus.be.server.infrastructure.persistence.order.JpaOrderRepository
-import kr.hhplus.be.server.infrastructure.persistence.product.JpaProductRepository
+import kr.hhplus.be.server.infrastructure.persistence.order.DataJpaOrderRepository
+import kr.hhplus.be.server.infrastructure.persistence.product.DataJpaProductRepository
 import kr.hhplus.be.server.stub.OrderFixture
 import kr.hhplus.be.server.stub.ProductFixture
 import kr.hhplus.be.server.template.IntegrationTest
@@ -17,17 +17,15 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class ProductControllerTest : IntegrationTest() {
     @Autowired
-    private lateinit var jpaProductRepository: JpaProductRepository
+    private lateinit var dataJpaProductRepository: DataJpaProductRepository
 
     @Autowired
-    private lateinit var jpaOrderRepository: JpaOrderRepository
+    private lateinit var dataJpaOrderRepository: DataJpaOrderRepository
 
     @Autowired
     private lateinit var jpaOrderItemRepository: JpaOrderItemRepository
@@ -43,14 +41,14 @@ class ProductControllerTest : IntegrationTest() {
                         stock = 10,
                     )
                 }
-        jpaProductRepository.saveAll(products)
+        dataJpaProductRepository.saveAll(products)
         val confirmedOrders =
             (1..5L).map {
                 OrderFixture.create(
                     status = OrderStatus.CONFIRMED,
                 )
             }
-        jpaOrderRepository.saveAllAndFlush(confirmedOrders)
+        dataJpaOrderRepository.saveAllAndFlush(confirmedOrders)
 
         val pendingOrders =
             (6..7L).map {
@@ -58,7 +56,7 @@ class ProductControllerTest : IntegrationTest() {
                     status = OrderStatus.PENDING,
                 )
             }
-        jpaOrderRepository.saveAllAndFlush(pendingOrders)
+        dataJpaOrderRepository.saveAllAndFlush(pendingOrders)
 
         val orderItems =
             listOf(

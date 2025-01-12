@@ -6,12 +6,12 @@ import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.domain.coupon.CouponStatus
 import kr.hhplus.be.server.helper.ConcurrentTestHelper
-import kr.hhplus.be.server.infrastructure.persistence.coupon.JpaCouponPolicyRepository
+import kr.hhplus.be.server.infrastructure.persistence.coupon.DataJpaCouponPolicyRepository
 import kr.hhplus.be.server.infrastructure.persistence.coupon.JpaCouponRepository
 import kr.hhplus.be.server.infrastructure.persistence.order.JpaOrderItemRepository
-import kr.hhplus.be.server.infrastructure.persistence.order.JpaOrderRepository
-import kr.hhplus.be.server.infrastructure.persistence.product.JpaProductRepository
-import kr.hhplus.be.server.infrastructure.persistence.user.JpaUserRepository
+import kr.hhplus.be.server.infrastructure.persistence.order.DataJpaOrderRepository
+import kr.hhplus.be.server.infrastructure.persistence.product.DataJpaProductRepository
+import kr.hhplus.be.server.infrastructure.persistence.user.DataJpaUserRepository
 import kr.hhplus.be.server.stub.CouponFixture
 import kr.hhplus.be.server.stub.ProductFixture
 import kr.hhplus.be.server.stub.UserFixture
@@ -29,30 +29,30 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class OrderControllerTest : IntegrationTest() {
     @Autowired
-    private lateinit var jpaUserRepository: JpaUserRepository
+    private lateinit var dataJpaUserRepository: DataJpaUserRepository
 
     @Autowired
-    private lateinit var jpaCouponPolicyRepository: JpaCouponPolicyRepository
+    private lateinit var dataJpaCouponPolicyRepository: DataJpaCouponPolicyRepository
 
     @Autowired
     private lateinit var jpaCouponRepository: JpaCouponRepository
 
     @Autowired
-    private lateinit var jpaOrderRepository: JpaOrderRepository
+    private lateinit var dataJpaOrderRepository: DataJpaOrderRepository
 
     @Autowired
     private lateinit var jpaOrderItemRepository: JpaOrderItemRepository
 
     @Autowired
-    private lateinit var jpaProductRepository: JpaProductRepository
+    private lateinit var dataJpaProductRepository: DataJpaProductRepository
 
     @BeforeEach
     fun setUp() {
         val users = (1..11L).map { UserFixture.create(id = 0L, name = "user $it") }
-        jpaUserRepository.saveAllAndFlush(users)
+        dataJpaUserRepository.saveAllAndFlush(users)
 
         val couponPolicy = CouponFixture.createPolicy(id = 0L, currentCount = 0)
-        jpaCouponPolicyRepository.saveAndFlush(couponPolicy)
+        dataJpaCouponPolicyRepository.saveAndFlush(couponPolicy)
 
         val coupon = CouponFixture.create(policy = couponPolicy, user = users[0])
         val usedCoupon = CouponFixture.create(policy = couponPolicy, user = users[1], status = CouponStatus.USED)
@@ -64,7 +64,7 @@ class OrderControllerTest : IntegrationTest() {
                 ProductFixture.create(id = 0L, name = "Product 1", stock = 10, price = 1000),
                 ProductFixture.create(id = 0L, name = "Product 2", stock = 5, price = 2000),
             )
-        jpaProductRepository.saveAllAndFlush(products)
+        dataJpaProductRepository.saveAllAndFlush(products)
     }
 
     @Nested
