@@ -4,6 +4,7 @@ import kr.hhplus.be.server.api.product.response.PopularProductResponse
 import kr.hhplus.be.server.api.product.response.ProductResponse
 import kr.hhplus.be.server.api.product.response.toResponse
 import kr.hhplus.be.server.application.order.command.OrderItemCommand
+import kr.hhplus.be.server.application.order.command.toSortedProductIds
 import kr.hhplus.be.server.application.product.info.OrderItemInfo
 import kr.hhplus.be.server.application.product.info.toOrderProductInfo
 import kr.hhplus.be.server.common.constant.ErrorCode
@@ -40,7 +41,7 @@ class ProductService(
 
     @Transactional
     fun reduceStock(orderItems: List<OrderItemCommand>) {
-        val productIds = orderItems.map { it.productId }
+        val productIds = orderItems.toSortedProductIds()
         val products = productRepository.findAllByIdsWithLock(productIds)
 
         products.forEach { product ->

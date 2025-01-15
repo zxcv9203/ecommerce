@@ -1,25 +1,17 @@
 package kr.hhplus.be.server.infrastructure.persistence.order
 
-import jakarta.persistence.LockModeType
 import kr.hhplus.be.server.domain.order.Order
 import kr.hhplus.be.server.domain.order.OrderRepository
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Lock
-import org.springframework.data.jpa.repository.Query
+import org.springframework.stereotype.Repository
 
-interface JpaOrderRepository :
-    OrderRepository,
-    JpaRepository<Order, Long> {
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query(
-        """
-            SELECT o
-            FROM Order o
-            WHERE o.id = :id AND o.user.id = :userId
-        """,
-    )
+@Repository
+class JpaOrderRepository(
+    private val dataJpaOrderRepository: DataJpaOrderRepository,
+) : OrderRepository {
+    override fun save(order: Order): Order = dataJpaOrderRepository.save(order)
+
     override fun findByIdAndUserIdWithLock(
         id: Long,
         userId: Long,
-    ): Order?
+    ): Order? = dataJpaOrderRepository.findByIdAndUserIdWithLock(id, userId)
 }

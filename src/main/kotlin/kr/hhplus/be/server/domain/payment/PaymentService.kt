@@ -10,13 +10,9 @@ class PaymentService(
     private val externalPaymentClient: ExternalPaymentClient,
 ) {
     @Transactional
-    fun pay(
-        order: Order,
-        amount: Long,
-    ) {
-        val payment = paymentRepository.save(Payment(order, amount))
+    fun pay(order: Order) {
+        val payment = paymentRepository.save(Payment(order, order.discountPrice))
 
         externalPaymentClient.sendPaymentResult(payment.id, PaymentStatus.SUCCESS)
     }
-
 }

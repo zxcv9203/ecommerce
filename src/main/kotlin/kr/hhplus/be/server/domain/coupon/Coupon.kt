@@ -47,18 +47,6 @@ class Coupon(
         }
     }
 
-    fun getDiscountedPrice(price: Long): Long {
-        val calculatedPrice =
-            when (policy.discountType) {
-                CouponDiscountType.AMOUNT -> price - policy.discountAmount
-                CouponDiscountType.PERCENT -> (price * (100 - policy.discountAmount) / 100)
-            }
-        if (calculatedPrice <= 0) {
-            throw BusinessException(ErrorCode.ORDER_AMOUNT_INVALID)
-        }
-        return calculatedPrice
-    }
-
     fun reserve(order: Order) {
         if (status != CouponStatus.ACTIVE) {
             throw BusinessException(ErrorCode.COUPON_ALREADY_USED)
@@ -75,6 +63,10 @@ class Coupon(
 
         status = CouponStatus.USED
     }
+
+    fun getDiscountType(): CouponDiscountType = policy.discountType
+
+    fun getDiscountAmount(): Long = policy.discountAmount
 }
 
 fun Coupon?.checkAlreadyIssue() {

@@ -14,3 +14,5 @@ data class OrderItemCommand(
 )
 
 fun OrderItem.toCommand() = OrderItemCommand(productId, count)
+
+fun List<OrderItemCommand>.toSortedProductIds() = map { it.productId }.sorted()

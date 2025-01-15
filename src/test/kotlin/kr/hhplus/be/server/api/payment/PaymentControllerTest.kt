@@ -5,10 +5,10 @@ import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.domain.order.OrderStatus
 import kr.hhplus.be.server.helper.ConcurrentTestHelper
+import kr.hhplus.be.server.infrastructure.persistence.order.DataJpaOrderRepository
 import kr.hhplus.be.server.infrastructure.persistence.order.JpaOrderItemRepository
-import kr.hhplus.be.server.infrastructure.persistence.order.JpaOrderRepository
-import kr.hhplus.be.server.infrastructure.persistence.product.JpaProductRepository
-import kr.hhplus.be.server.infrastructure.persistence.user.JpaUserRepository
+import kr.hhplus.be.server.infrastructure.persistence.product.DataJpaProductRepository
+import kr.hhplus.be.server.infrastructure.persistence.user.DataJpaUserRepository
 import kr.hhplus.be.server.stub.OrderFixture
 import kr.hhplus.be.server.stub.ProductFixture
 import kr.hhplus.be.server.stub.UserFixture
@@ -27,23 +27,23 @@ import java.util.concurrent.CompletableFuture
 
 class PaymentControllerTest : IntegrationTest() {
     @Autowired
-    private lateinit var jpaUserRepository: JpaUserRepository
+    private lateinit var dataJpaUserRepository: DataJpaUserRepository
 
     @Autowired
-    private lateinit var jpaOrderRepository: JpaOrderRepository
+    private lateinit var dataJpaOrderRepository: DataJpaOrderRepository
 
     @Autowired
     private lateinit var jpaOrderItemRepository: JpaOrderItemRepository
 
     @Autowired
-    private lateinit var jpaProductRepository: JpaProductRepository
+    private lateinit var dataJpaProductRepository: DataJpaProductRepository
 
     @BeforeEach
     fun setUp() {
         val user = UserFixture.create(id = 0L, balance = 10000)
-        jpaUserRepository.saveAndFlush(user)
+        dataJpaUserRepository.saveAndFlush(user)
         val user2 = UserFixture.create(id = 0L, balance = 10000)
-        jpaUserRepository.saveAndFlush(user2)
+        dataJpaUserRepository.saveAndFlush(user2)
 
         val products =
             listOf(
@@ -53,27 +53,65 @@ class PaymentControllerTest : IntegrationTest() {
                 ProductFixture.create(id = 0L, name = "Product 4", stock = 1, price = 100000),
                 ProductFixture.create(id = 0L, name = "Product 5", stock = 1, price = 1000),
             )
-        jpaProductRepository.saveAllAndFlush(products)
+        dataJpaProductRepository.saveAllAndFlush(products)
 
-        val pendingOrder = OrderFixture.create(id = 0L, user = user, status = OrderStatus.PENDING, totalPrice = 1000)
-        jpaOrderRepository.saveAndFlush(pendingOrder)
+        val pendingOrder =
+            OrderFixture.create(
+                id = 0L,
+                user = user,
+                status = OrderStatus.PENDING,
+                totalPrice = 1000,
+                discountPrice = 1000,
+            )
+        dataJpaOrderRepository.saveAndFlush(pendingOrder)
 
         val completedOrder =
-            OrderFixture.create(id = 0L, user = user, status = OrderStatus.CONFIRMED, totalPrice = 2000)
-        jpaOrderRepository.saveAndFlush(completedOrder)
+            OrderFixture.create(
+                id = 0L,
+                user = user,
+                status = OrderStatus.CONFIRMED,
+                totalPrice = 2000,
+                discountPrice = 2000,
+            )
+        dataJpaOrderRepository.saveAndFlush(completedOrder)
 
-        val outOfStockOrder = OrderFixture.create(id = 0L, user = user, status = OrderStatus.PENDING, totalPrice = 3000)
-        jpaOrderRepository.saveAndFlush(outOfStockOrder)
+        val outOfStockOrder =
+            OrderFixture.create(
+                id = 0L,
+                user = user,
+                status = OrderStatus.PENDING,
+                totalPrice = 3000,
+                discountPrice = 3000,
+            )
+        dataJpaOrderRepository.saveAndFlush(outOfStockOrder)
         val insufficientBalanceOrder =
-            OrderFixture.create(id = 0L, user = user, status = OrderStatus.PENDING, totalPrice = 100000)
-        jpaOrderRepository.saveAndFlush(insufficientBalanceOrder)
+            OrderFixture.create(
+                id = 0L,
+                user = user,
+                status = OrderStatus.PENDING,
+                totalPrice = 100000,
+                discountPrice = 100000,
+            )
+        dataJpaOrderRepository.saveAndFlush(insufficientBalanceOrder)
 
         val product5User1Order =
-            OrderFixture.create(id = 0L, user = user, status = OrderStatus.PENDING, totalPrice = 1000)
-        jpaOrderRepository.saveAndFlush(product5User1Order)
+            OrderFixture.create(
+                id = 0L,
+                user = user,
+                status = OrderStatus.PENDING,
+                totalPrice = 1000,
+                discountPrice = 1000,
+            )
+        dataJpaOrderRepository.saveAndFlush(product5User1Order)
         val product5User2Order =
-            OrderFixture.create(id = 0L, user = user2, status = OrderStatus.PENDING, totalPrice = 1000)
-        jpaOrderRepository.saveAndFlush(product5User2Order)
+            OrderFixture.create(
+                id = 0L,
+                user = user2,
+                status = OrderStatus.PENDING,
+                totalPrice = 1000,
+                discountPrice = 1000,
+            )
+        dataJpaOrderRepository.saveAndFlush(product5User2Order)
 
         val orderItems =
             listOf(
@@ -246,14 +284,14 @@ class PaymentControllerTest : IntegrationTest() {
             var confirmCount = 0
             var pendingCount = 0
 
-            jpaOrderRepository.findById(5L).orElseThrow().let {
+            dataJpaOrderRepository.findById(5L).orElseThrow().let {
                 if (it.status == OrderStatus.CONFIRMED) {
                     confirmCount++
                 } else {
                     pendingCount++
                 }
             }
-            jpaOrderRepository.findById(6L).orElseThrow().let {
+            dataJpaOrderRepository.findById(6L).orElseThrow().let {
                 if (it.status == OrderStatus.CONFIRMED) {
                     confirmCount++
                 } else {
@@ -263,7 +301,7 @@ class PaymentControllerTest : IntegrationTest() {
 
             assertThat(confirmCount).isEqualTo(1)
             assertThat(pendingCount).isEqualTo(1)
-            val updatedProduct = jpaProductRepository.findById(5L).orElseThrow()
+            val updatedProduct = dataJpaProductRepository.findById(5L).orElseThrow()
             assertThat(updatedProduct.stock).isEqualTo(0)
         }
     }

@@ -4,8 +4,8 @@ import kr.hhplus.be.server.api.user.request.UserBalanceRequest
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.helper.ConcurrentTestHelper
-import kr.hhplus.be.server.infrastructure.persistence.user.JpaBalanceHistoryRepository
-import kr.hhplus.be.server.infrastructure.persistence.user.JpaUserRepository
+import kr.hhplus.be.server.infrastructure.persistence.user.DataJpaBalanceHistoryRepository
+import kr.hhplus.be.server.infrastructure.persistence.user.DataJpaUserRepository
 import kr.hhplus.be.server.stub.UserFixture
 import kr.hhplus.be.server.template.IntegrationTest
 import org.assertj.core.api.Assertions.assertThat
@@ -24,15 +24,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 class UserBalanceControllerTest : IntegrationTest() {
     @Autowired
-    private lateinit var jpaUserRepository: JpaUserRepository
+    private lateinit var dataJpaUserRepository: DataJpaUserRepository
 
     @Autowired
-    private lateinit var jpaBalanceHistoryRepository: JpaBalanceHistoryRepository
+    private lateinit var dataJpaBalanceHistoryRepository: DataJpaBalanceHistoryRepository
 
     @BeforeEach
     fun setUp() {
         val user = UserFixture.create(id = 0L, balance = 10000)
-        jpaUserRepository.saveAndFlush(user)
+        dataJpaUserRepository.saveAndFlush(user)
     }
 
     @Nested
@@ -56,7 +56,7 @@ class UserBalanceControllerTest : IntegrationTest() {
                 .andExpect(jsonPath("$.message").value(SuccessCode.USER_BALANCE_CHARGE.message))
                 .andExpect(jsonPath("$.data.amount").value(20000))
 
-            val histories = jpaBalanceHistoryRepository.findAll()
+            val histories = dataJpaBalanceHistoryRepository.findAll()
 
             assertThat(histories).hasSize(1)
             assertThat(histories[0].user.id).isEqualTo(userId)
@@ -150,7 +150,7 @@ class UserBalanceControllerTest : IntegrationTest() {
 
             val successCount = result.count { it }
 
-            val user = jpaUserRepository.findByIdOrNull(1) ?: throw RuntimeException("User not found")
+            val user = dataJpaUserRepository.findByIdOrNull(1) ?: throw RuntimeException("User not found")
             assertThat(user.balance).isEqualTo(10000 + successCount * amount)
         }
     }
