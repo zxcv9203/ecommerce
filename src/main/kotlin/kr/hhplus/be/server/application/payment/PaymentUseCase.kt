@@ -4,7 +4,6 @@ import kr.hhplus.be.server.application.order.command.toCommand
 import kr.hhplus.be.server.application.payment.command.PaymentCommand
 import kr.hhplus.be.server.application.user.command.toUseBalanceCommand
 import kr.hhplus.be.server.domain.coupon.CouponService
-import kr.hhplus.be.server.domain.discount.DiscountService
 import kr.hhplus.be.server.domain.order.OrderService
 import kr.hhplus.be.server.domain.payment.PaymentService
 import kr.hhplus.be.server.domain.product.ProductService
@@ -23,6 +22,7 @@ class PaymentUseCase(
     @Transactional
     fun pay(command: PaymentCommand) {
         val user = userService.getById(command.userId)
+
         val order =
             orderService
                 .getByIdAndUserIdWithLock(command.orderId, user.id)

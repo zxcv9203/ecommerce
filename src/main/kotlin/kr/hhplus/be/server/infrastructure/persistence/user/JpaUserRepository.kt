@@ -13,5 +13,4 @@ class JpaUserRepository(
 
     override fun save(user: User): User = dataJpaUserRepository.saveAndFlush(user)
 
-    override fun existsById(id: Long): Boolean = dataJpaUserRepository.existsById(id)
 }

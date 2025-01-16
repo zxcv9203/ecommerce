@@ -8,8 +8,6 @@ import kr.hhplus.be.server.domain.coupon.CouponStatus
 import kr.hhplus.be.server.helper.ConcurrentTestHelper
 import kr.hhplus.be.server.infrastructure.persistence.coupon.DataJpaCouponPolicyRepository
 import kr.hhplus.be.server.infrastructure.persistence.coupon.JpaCouponRepository
-import kr.hhplus.be.server.infrastructure.persistence.order.JpaOrderItemRepository
-import kr.hhplus.be.server.infrastructure.persistence.order.DataJpaOrderRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.DataJpaProductRepository
 import kr.hhplus.be.server.infrastructure.persistence.user.DataJpaUserRepository
 import kr.hhplus.be.server.stub.CouponFixture
@@ -22,6 +20,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -36,12 +35,6 @@ class OrderControllerTest : IntegrationTest() {
 
     @Autowired
     private lateinit var jpaCouponRepository: JpaCouponRepository
-
-    @Autowired
-    private lateinit var dataJpaOrderRepository: DataJpaOrderRepository
-
-    @Autowired
-    private lateinit var jpaOrderItemRepository: JpaOrderItemRepository
 
     @Autowired
     private lateinit var dataJpaProductRepository: DataJpaProductRepository
@@ -91,6 +84,7 @@ class OrderControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/orders")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isCreated)
                 .andExpect(jsonPath("$.code").value(SuccessCode.ORDER_CREATED.status.value()))
@@ -118,11 +112,67 @@ class OrderControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/orders")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isCreated)
                 .andExpect(jsonPath("$.code").value(SuccessCode.ORDER_CREATED.status.value()))
                 .andExpect(jsonPath("$.message").value(SuccessCode.ORDER_CREATED.message))
                 .andExpect(jsonPath("$.data.orderId").value(1L))
+        }
+
+        @Test
+        @DisplayName("[실패] 사용자 인증 정보가 유효하지 않은 경우 401 에러 발생")
+        fun testFailWhenUnauthorized() {
+            val userId = 1L
+            val couponId = 1L
+
+            val request =
+                OrderRequest(
+                    userId = userId,
+                    items =
+                        listOf(
+                            OrderItemRequest(productId = 1L, quantity = 2),
+                            OrderItemRequest(productId = 2L, quantity = 1),
+                        ),
+                    couponId = couponId,
+                )
+
+            mockMvc
+                .perform(
+                    post("/api/v1/orders")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)),
+                ).andExpect(status().isUnauthorized)
+                .andExpect(jsonPath("$.code").value(ErrorCode.UNAUTHORIZED.status.value()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.UNAUTHORIZED.message))
+        }
+
+        @Test
+        @DisplayName("[실패] 인증된 사용자와 전달한 사용자가 다른 경우 403 에러 발생")
+        fun testFailWhenForbidden() {
+            val userId = 1L
+            val couponId = 1L
+
+            val request =
+                OrderRequest(
+                    userId = userId,
+                    items =
+                        listOf(
+                            OrderItemRequest(productId = 1L, quantity = 2),
+                            OrderItemRequest(productId = 2L, quantity = 1),
+                        ),
+                    couponId = couponId,
+                )
+
+            mockMvc
+                .perform(
+                    post("/api/v1/orders")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, 2L)
+                        .content(objectMapper.writeValueAsString(request)),
+                ).andExpect(status().isForbidden)
+                .andExpect(jsonPath("$.code").value(ErrorCode.FORBIDDEN.status.value()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.FORBIDDEN.message))
         }
 
         @Test
@@ -149,6 +199,7 @@ class OrderControllerTest : IntegrationTest() {
                             .perform(
                                 post("/api/v1/orders")
                                     .contentType(MediaType.APPLICATION_JSON)
+                                    .header(HttpHeaders.AUTHORIZATION, userId)
                                     .content(objectMapper.writeValueAsString(request)),
                             ).andReturn()
                     if (httpResponse.response.status != 201) {
@@ -184,6 +235,7 @@ class OrderControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/orders")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isNotFound)
                 .andExpect(jsonPath("$.code").value(ErrorCode.USER_NOT_FOUND.status.value()))
@@ -211,6 +263,7 @@ class OrderControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/orders")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isNotFound)
                 .andExpect(jsonPath("$.code").value(ErrorCode.PRODUCT_NOT_FOUND.status.value()))
@@ -238,6 +291,7 @@ class OrderControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/orders")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isNotFound)
                 .andExpect(jsonPath("$.code").value(ErrorCode.COUPON_NOT_FOUND.status.value()))
@@ -265,6 +319,7 @@ class OrderControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/orders")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isBadRequest)
                 .andExpect(jsonPath("$.code").value(ErrorCode.COUPON_ALREADY_USED.status.value()))
@@ -292,6 +347,7 @@ class OrderControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/orders")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isBadRequest)
                 .andExpect(jsonPath("$.code").value(ErrorCode.PRODUCT_OUT_OF_STOCK.status.value()))
@@ -318,6 +374,7 @@ class OrderControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/orders")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isBadRequest)
                 .andExpect(jsonPath("$.code").value(ErrorCode.ORDER_AMOUNT_INVALID.status.value()))
@@ -345,6 +402,7 @@ class OrderControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/orders")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isBadRequest)
                 .andExpect(jsonPath("$.code").value(ErrorCode.COUPON_OWNER_MISMATCH.status.value()))

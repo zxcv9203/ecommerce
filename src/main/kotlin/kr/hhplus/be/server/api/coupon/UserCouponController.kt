@@ -5,6 +5,7 @@ import kr.hhplus.be.server.api.coupon.response.CouponsResponse
 import kr.hhplus.be.server.api.coupon.response.toResponse
 import kr.hhplus.be.server.application.coupon.CouponUseCase
 import kr.hhplus.be.server.application.coupon.command.FindUserCouponCommand
+import kr.hhplus.be.server.common.constant.AuthConstants
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.common.model.CustomResponse
 import org.springframework.data.domain.Pageable
@@ -20,9 +21,11 @@ class UserCouponController(
     @GetMapping
     override fun findAll(
         @PathVariable userId: Long,
+        @RequestAttribute(AuthConstants.AUTH_ID) authenticationId: Long,
         pageable: Pageable,
     ): ResponseEntity<CustomResponse<CouponsResponse>> =
-        FindUserCouponCommand(userId, pageable)
+        FindUserCouponCommand
+            .of(userId, authenticationId, pageable)
             .let { couponUseCase.findAllByUserId(it) }
             .toResponse()
             .let { CustomResponse.success(SuccessCode.COUPON_LIST_QUERY, it) }
@@ -31,10 +34,11 @@ class UserCouponController(
     @PostMapping
     override fun issue(
         @PathVariable userId: Long,
+        @RequestAttribute(AuthConstants.AUTH_ID) authenticationId: Long,
         @RequestBody request: IssueCouponRequest,
     ): ResponseEntity<CustomResponse<Unit>> =
         request
-            .toCommand(userId)
+            .toCommand(userId, authenticationId)
             .let { couponUseCase.issue(it) }
             .let { CustomResponse.success(SuccessCode.COUPON_ISSUE_SUCCESS, it) }
             .let { ResponseEntity.status(HttpStatus.CREATED).body(it) }

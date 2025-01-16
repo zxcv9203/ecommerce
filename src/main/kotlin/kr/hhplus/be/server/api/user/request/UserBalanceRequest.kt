@@ -13,9 +13,15 @@ data class UserBalanceRequest(
         }
     }
 
-    fun toCommand(userId: Long) =
-        ChargeBalanceCommand(
+    fun toCommand(
+        userId: Long,
+        authenticationId: Long,
+    ): ChargeBalanceCommand {
+        if (userId != authenticationId) throw BusinessException(ErrorCode.FORBIDDEN)
+
+        return ChargeBalanceCommand(
             userId = userId,
             amount = amount!!,
         )
+    }
 }

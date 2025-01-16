@@ -28,6 +28,8 @@ interface UserCouponApi {
     fun findAll(
         @Parameter(description = "조회할 유저 ID", required = true)
         userId: Long,
+        @Parameter(description = "인증된 유저 ID", required = true)
+        authenticationId: Long,
         @ParameterObject
         pageable: Pageable,
     ): ResponseEntity<CustomResponse<CouponsResponse>>
@@ -60,6 +62,8 @@ interface UserCouponApi {
     fun issue(
         @Parameter(description = "조회할 유저 ID", required = true)
         userId: Long,
+        @Parameter(description = "인증된 유저 ID", required = true)
+        authenticationId: Long,
         @RequestBody(description = "쿠폰 발급 요청 정보", required = true)
         request: IssueCouponRequest,
     ): ResponseEntity<CustomResponse<Unit>>

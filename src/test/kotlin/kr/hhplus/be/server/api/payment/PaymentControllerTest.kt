@@ -19,6 +19,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -143,12 +144,14 @@ class PaymentControllerTest : IntegrationTest() {
         @Test
         @DisplayName("[성공] 결제가 성공하면 200 반환")
         fun testPaymentSuccess() {
-            val request = PaymentRequest(userId = 1L, orderId = 1L)
+            val userId = 1L
+            val request = PaymentRequest(userId = userId, orderId = 1L)
 
             mockMvc
                 .perform(
                     post("/api/v1/payments")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isOk)
                 .andExpect(jsonPath("$.code").value(SuccessCode.PAYMENT_COMPLETED.status.value()))
@@ -156,14 +159,49 @@ class PaymentControllerTest : IntegrationTest() {
         }
 
         @Test
-        @DisplayName("[실패] 존재하지 않는 사용자로 요청하면 404 반환")
-        fun testPaymentFailUserNotFound() {
-            val request = PaymentRequest(userId = 0L, orderId = 1L)
+        @DisplayName("[실패] 인증 헤더의 사용자 ID가 유효하지 않으면 401 반환")
+        fun testPaymentFailUnauthorized() {
+            val userId = 1L
+            val request = PaymentRequest(userId = userId, orderId = 1L)
 
             mockMvc
                 .perform(
                     post("/api/v1/payments")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)),
+                ).andExpect(status().isUnauthorized)
+                .andExpect(jsonPath("$.code").value(ErrorCode.UNAUTHORIZED.status.value()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.UNAUTHORIZED.message))
+        }
+
+        @Test
+        @DisplayName("[실패] 인증 아이디와 사용자 아이디가 다르면 403 반환")
+        fun testPaymentFailForbidden() {
+            val userId = 1L
+            val request = PaymentRequest(userId = userId, orderId = 1L)
+
+            mockMvc
+                .perform(
+                    post("/api/v1/payments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, 2L)
+                        .content(objectMapper.writeValueAsString(request)),
+                ).andExpect(status().isForbidden)
+                .andExpect(jsonPath("$.code").value(ErrorCode.FORBIDDEN.status.value()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.FORBIDDEN.message))
+        }
+
+        @Test
+        @DisplayName("[실패] 존재하지 않는 사용자로 요청하면 404 반환")
+        fun testPaymentFailUserNotFound() {
+            val userId = 0L
+            val request = PaymentRequest(userId = userId, orderId = 1L)
+
+            mockMvc
+                .perform(
+                    post("/api/v1/payments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isNotFound)
                 .andExpect(jsonPath("$.code").value(ErrorCode.USER_NOT_FOUND.status.value()))
@@ -173,12 +211,14 @@ class PaymentControllerTest : IntegrationTest() {
         @Test
         @DisplayName("[실패] 주문이 존재하지 않으면 404 반환")
         fun testPaymentFailOrderNotFound() {
-            val request = PaymentRequest(userId = 1L, orderId = 0L)
+            val userId = 1L
+            val request = PaymentRequest(userId = userId, orderId = 0L)
 
             mockMvc
                 .perform(
                     post("/api/v1/payments")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isNotFound)
                 .andExpect(jsonPath("$.code").value(ErrorCode.ORDER_NOT_FOUND.status.value()))
@@ -188,12 +228,14 @@ class PaymentControllerTest : IntegrationTest() {
         @Test
         @DisplayName("[실패] 주문 상태가 결제 대기가 아닌 경우 400 반환")
         fun testPaymentFailOrderNotPending() {
+            val userId = 1L
             val request = PaymentRequest(userId = 1L, orderId = 2L)
 
             mockMvc
                 .perform(
                     post("/api/v1/payments")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isBadRequest)
                 .andExpect(jsonPath("$.code").value(ErrorCode.ORDER_ALREADY_PROCESSED.status.value()))
@@ -203,12 +245,14 @@ class PaymentControllerTest : IntegrationTest() {
         @Test
         @DisplayName("[실패] 재고가 부족한 경우 400 반환")
         fun testPaymentFailOutOfStock() {
+            val userId = 1L
             val request = PaymentRequest(userId = 1L, orderId = 3L)
 
             mockMvc
                 .perform(
                     post("/api/v1/payments")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isBadRequest)
                 .andExpect(jsonPath("$.code").value(ErrorCode.PRODUCT_OUT_OF_STOCK.status.value()))
@@ -218,12 +262,14 @@ class PaymentControllerTest : IntegrationTest() {
         @Test
         @DisplayName("[실패] 잔액이 부족한 경우 400 반환")
         fun testPaymentFailInsufficientBalance() {
-            val request = PaymentRequest(userId = 1L, orderId = 4L)
+            val userId = 1L
+            val request = PaymentRequest(userId = userId, orderId = 4L)
 
             mockMvc
                 .perform(
                     post("/api/v1/payments")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isBadRequest)
                 .andExpect(jsonPath("$.code").value(ErrorCode.INSUFFICIENT_BALANCE.status.value()))
@@ -233,7 +279,8 @@ class PaymentControllerTest : IntegrationTest() {
         @Test
         @DisplayName("[동시성] 동시에 같은 결제 요청이 5번 들어오면 1번만 성공하고 나머지는 실패")
         fun testPaymentConcurrency() {
-            val request = PaymentRequest(userId = 1L, orderId = 1L)
+            val userId = 1L
+            val request = PaymentRequest(userId = userId, orderId = 1L)
 
             val result =
                 ConcurrentTestHelper.executeAsyncTasks(5) {
@@ -242,6 +289,7 @@ class PaymentControllerTest : IntegrationTest() {
                             .perform(
                                 post("/api/v1/payments")
                                     .contentType(MediaType.APPLICATION_JSON)
+                                    .header(HttpHeaders.AUTHORIZATION, userId)
                                     .content(objectMapper.writeValueAsString(request)),
                             ).andReturn()
                     if (httpResponse.response.status != 200) {
@@ -259,8 +307,10 @@ class PaymentControllerTest : IntegrationTest() {
         @Test
         @DisplayName("[동시성] 동시에 다른 결제 요청이 들어왔을 때 재고가 부족해지는 경우 1번만 성공하고 나머지는 실패")
         fun testPaymentConcurrencyOutOfStock() {
-            val requestUser1 = PaymentRequest(userId = 1L, orderId = 5L)
-            val requestUser2 = PaymentRequest(userId = 2L, orderId = 6L)
+            val user1Id = 1L
+            val user2Id = 2L
+            val requestUser1 = PaymentRequest(userId = user1Id, orderId = 5L)
+            val requestUser2 = PaymentRequest(userId = user2Id, orderId = 6L)
 
             val tasks =
                 listOf(
@@ -268,6 +318,7 @@ class PaymentControllerTest : IntegrationTest() {
                         mockMvc.perform(
                             post("/api/v1/payments")
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .header(HttpHeaders.AUTHORIZATION, user1Id)
                                 .content(objectMapper.writeValueAsString(requestUser1)),
                         )
                     },
@@ -275,6 +326,7 @@ class PaymentControllerTest : IntegrationTest() {
                         mockMvc.perform(
                             post("/api/v1/payments")
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .header(HttpHeaders.AUTHORIZATION, user2Id)
                                 .content(objectMapper.writeValueAsString(requestUser2)),
                         )
                     },

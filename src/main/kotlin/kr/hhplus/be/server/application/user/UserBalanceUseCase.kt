@@ -1,8 +1,9 @@
 package kr.hhplus.be.server.application.user
 
+import kr.hhplus.be.server.application.user.command.ChargeBalanceCommand
+import kr.hhplus.be.server.application.user.command.GetBalanceCommand
 import kr.hhplus.be.server.application.user.info.UserBalanceInfo
 import kr.hhplus.be.server.application.user.info.toBalanceResult
-import kr.hhplus.be.server.application.user.command.ChargeBalanceCommand
 import kr.hhplus.be.server.domain.user.UserService
 import org.springframework.stereotype.Component
 
@@ -14,8 +15,8 @@ class UserBalanceUseCase(
         userService
             .chargeBalance(command)
 
-    fun getBalance(userId: Long): UserBalanceInfo =
+    fun getBalance(command: GetBalanceCommand): UserBalanceInfo =
         userService
-            .getById(userId)
+            .getById(command.userId)
             .toBalanceResult()
 }

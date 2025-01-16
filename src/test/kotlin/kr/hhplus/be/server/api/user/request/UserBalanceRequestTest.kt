@@ -21,4 +21,18 @@ class UserBalanceRequestTest {
                 .hasFieldOrPropertyWithValue("code", ErrorCode.USER_BALANCE_BELOW_MINIMUM)
         }
     }
+
+    @Nested
+    @DisplayName("command 객체 변환")
+    inner class ToCommand {
+        @Test
+        @DisplayName("[실패] 유저 아이디랑 인증 아이디가 다를 때 FORBIDDEN 에러 발생")
+        fun testFailWhenUserIdAndAuthIdDiff() {
+            val userBalanceRequest = UserBalanceRequest(1000)
+
+            assertThatThrownBy { userBalanceRequest.toCommand(1, 2) }
+                .isInstanceOf(BusinessException::class.java)
+                .hasFieldOrPropertyWithValue("code", ErrorCode.FORBIDDEN)
+        }
+    }
 }

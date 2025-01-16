@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.api.user
 
-import com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.classic.methods.HttpHead
 import kr.hhplus.be.server.api.user.request.UserBalanceRequest
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
@@ -50,6 +49,7 @@ class UserBalanceControllerTest : IntegrationTest() {
                 .perform(
                     patch("/api/v1/users/{userId}/balance", userId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(
                             objectMapper.writeValueAsString(UserBalanceRequest(amount)),
                         ),
@@ -66,6 +66,39 @@ class UserBalanceControllerTest : IntegrationTest() {
         }
 
         @Test
+        @DisplayName("[실패] 인증 헤더의 사용자 ID가 유효하지 않으면 401 반환")
+        fun testFailWhenInvalidAuthId() {
+            val userId = 1L
+            val amount = 10000L
+
+            mockMvc
+                .perform(
+                    patch("/api/v1/users/{userId}/balance", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                            objectMapper.writeValueAsString(UserBalanceRequest(amount)),
+                        ),
+                ).andExpect(status().isUnauthorized)
+        }
+
+        @Test
+        @DisplayName("[실패] 인증 아이디와 사용자 아이디가 다르면 403 반환")
+        fun testFailWhenUserIdAndAuthIdDiff() {
+            val userId = 1L
+            val amount = 10000L
+
+            mockMvc
+                .perform(
+                    patch("/api/v1/users/{userId}/balance", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, 2)
+                        .content(
+                            objectMapper.writeValueAsString(UserBalanceRequest(amount)),
+                        ),
+                ).andExpect(status().isForbidden)
+        }
+
+        @Test
         @DisplayName("[실패] 사용자가 존재하지 않는 경우 404에러 발생")
         fun testFailWhenUserNotFound() {
             val userId = 0L
@@ -74,7 +107,7 @@ class UserBalanceControllerTest : IntegrationTest() {
             mockMvc
                 .perform(
                     patch("/api/v1/users/{userId}/balance", userId)
-                        .header(HttpHeaders.AUTHORIZATION, "1")
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                             objectMapper.writeValueAsString(UserBalanceRequest(amount)),
@@ -94,6 +127,7 @@ class UserBalanceControllerTest : IntegrationTest() {
                 .perform(
                     patch("/api/v1/users/{userId}/balance", userId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(
                             """
                             {
@@ -116,6 +150,7 @@ class UserBalanceControllerTest : IntegrationTest() {
                 .perform(
                     patch("/api/v1/users/{userId}/balance", userId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(
                             """
                             {
@@ -141,6 +176,7 @@ class UserBalanceControllerTest : IntegrationTest() {
                             .perform(
                                 patch("/api/v1/users/{userId}/balance", userId)
                                     .contentType(MediaType.APPLICATION_JSON)
+                                    .header(HttpHeaders.AUTHORIZATION, userId)
                                     .content(
                                         objectMapper.writeValueAsString(UserBalanceRequest(amount)),
                                     ),
@@ -169,11 +205,37 @@ class UserBalanceControllerTest : IntegrationTest() {
             mockMvc
                 .perform(
                     get("/api/v1/users/{userId}/balance", userId)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .contentType(MediaType.APPLICATION_JSON),
                 ).andExpect(status().isOk)
                 .andExpect(jsonPath("$.code").value(SuccessCode.USER_BALANCE_QUERY.status.value()))
                 .andExpect(jsonPath("$.message").value(SuccessCode.USER_BALANCE_QUERY.message))
                 .andExpect(jsonPath("$.data.amount").value(10000))
+        }
+
+        @Test
+        @DisplayName("[실패] 인증 헤더의 사용자 ID가 유효하지 않으면 401 반환")
+        fun testFailWhenInvalidAuthId() {
+            val userId = 1L
+
+            mockMvc
+                .perform(
+                    get("/api/v1/users/{userId}/balance", userId)
+                        .contentType(MediaType.APPLICATION_JSON),
+                ).andExpect(status().isUnauthorized)
+        }
+
+        @Test
+        @DisplayName("[실패] 인증 아이디와 사용자 아이디가 다르면 403 반환")
+        fun testFailWhenUserIdAndAuthIdDiff() {
+            val userId = 1L
+
+            mockMvc
+                .perform(
+                    get("/api/v1/users/{userId}/balance", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, 2),
+                ).andExpect(status().isForbidden)
         }
 
         @Test
@@ -184,6 +246,7 @@ class UserBalanceControllerTest : IntegrationTest() {
             mockMvc
                 .perform(
                     get("/api/v1/users/{userId}/balance", userId)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .contentType(MediaType.APPLICATION_JSON),
                 ).andExpect(status().isNotFound)
                 .andExpect(jsonPath("$.code").value(ErrorCode.USER_NOT_FOUND.status.value()))
