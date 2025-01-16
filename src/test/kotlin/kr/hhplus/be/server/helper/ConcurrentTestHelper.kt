@@ -29,6 +29,23 @@ object ConcurrentTestHelper {
         }
     }
 
+    fun executeAsyncTasksByMultiTask(
+        taskCount: Int,
+        task: () -> Pair<Boolean, Boolean>,
+    ): List<Pair<Boolean, Boolean>> {
+        val executorService = Executors.newFixedThreadPool(200)
+        try {
+            val futureList =
+                (0 until taskCount).map {
+                    CompletableFuture.supplyAsync(task, executorService)
+                }
+            CompletableFuture.allOf(*futureList.toTypedArray()).join()
+            return futureList.map { it.get() }
+        } finally {
+            executorService.shutdown()
+        }
+    }
+
     fun executeAsyncTasksWithIndex(
         taskCount: Int,
         task: (Int) -> Unit,

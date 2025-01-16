@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.domain.user
 
-import kr.hhplus.be.server.application.user.info.UserBalanceInfo
 import kr.hhplus.be.server.application.user.command.ChargeBalanceCommand
 import kr.hhplus.be.server.application.user.command.UseBalanceCommand
+import kr.hhplus.be.server.application.user.info.UserBalanceInfo
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.exception.BusinessException
 import org.springframework.dao.OptimisticLockingFailureException
@@ -44,7 +44,7 @@ class UserService(
         val useBalanceUser =
             getById(command.userId)
                 .apply { this.use(command.amount) }
-        
+
         val savedUser =
             try {
                 userRepository.save(useBalanceUser)
