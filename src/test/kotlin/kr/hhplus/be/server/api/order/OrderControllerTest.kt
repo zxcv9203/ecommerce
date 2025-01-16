@@ -7,7 +7,7 @@ import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.domain.coupon.CouponStatus
 import kr.hhplus.be.server.helper.ConcurrentTestHelper
 import kr.hhplus.be.server.infrastructure.persistence.coupon.DataJpaCouponPolicyRepository
-import kr.hhplus.be.server.infrastructure.persistence.coupon.JpaCouponRepository
+import kr.hhplus.be.server.infrastructure.persistence.coupon.DataJpaCouponRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.DataJpaProductRepository
 import kr.hhplus.be.server.infrastructure.persistence.user.DataJpaUserRepository
 import kr.hhplus.be.server.stub.CouponFixture
@@ -34,7 +34,7 @@ class OrderControllerTest : IntegrationTest() {
     private lateinit var dataJpaCouponPolicyRepository: DataJpaCouponPolicyRepository
 
     @Autowired
-    private lateinit var jpaCouponRepository: JpaCouponRepository
+    private lateinit var dataJpaCouponRepository: DataJpaCouponRepository
 
     @Autowired
     private lateinit var dataJpaProductRepository: DataJpaProductRepository
@@ -49,8 +49,8 @@ class OrderControllerTest : IntegrationTest() {
 
         val coupon = CouponFixture.create(policy = couponPolicy, user = users[0])
         val usedCoupon = CouponFixture.create(policy = couponPolicy, user = users[1], status = CouponStatus.USED)
-        jpaCouponRepository.saveAndFlush(coupon)
-        jpaCouponRepository.saveAndFlush(usedCoupon)
+        dataJpaCouponRepository.saveAndFlush(coupon)
+        dataJpaCouponRepository.saveAndFlush(usedCoupon)
 
         val products =
             listOf(
