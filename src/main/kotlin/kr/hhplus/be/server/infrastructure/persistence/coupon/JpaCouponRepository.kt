@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.infrastructure.persistence.coupon
 
-import kr.hhplus.be.server.api.coupon.response.CouponResponse
+import kr.hhplus.be.server.application.coupon.info.CouponInfo
 import kr.hhplus.be.server.domain.coupon.Coupon
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query
 interface JpaCouponRepository : JpaRepository<Coupon, Long> {
     @Query(
         """
-        SELECT new kr.hhplus.be.server.api.coupon.response.CouponResponse(
+        SELECT new kr.hhplus.be.server.application.coupon.info.CouponInfo(
             c.id,
             c.policy.id,
             p.name,
@@ -27,7 +27,7 @@ interface JpaCouponRepository : JpaRepository<Coupon, Long> {
     fun findAllByUserId(
         userId: Long,
         pageable: Pageable,
-    ): Slice<CouponResponse>
+    ): Slice<CouponInfo>
 
     fun findByUserIdAndPolicyId(
         userId: Long,

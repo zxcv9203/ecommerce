@@ -38,6 +38,8 @@ interface UserBalanceApi {
         @Parameter(description = "충전할 유저 ID", required = true)
         @PathVariable
         userId: Long,
+        @Parameter(description = "인증된 유저 ID", required = true)
+        authenticationId: Long,
         @RequestBody(description = "잔액 충전 요청 정보", required = true)
         request: UserBalanceRequest,
     ): ResponseEntity<CustomResponse<UserBalanceResponse>>
@@ -60,5 +62,7 @@ interface UserBalanceApi {
         @Parameter(description = "조회할 유저 ID", required = true)
         @PathVariable
         userId: Long,
+        @Parameter(description = "인증된 유저 ID", required = true)
+        authenticationId: Long,
     ): ResponseEntity<CustomResponse<UserBalanceResponse>>
 }

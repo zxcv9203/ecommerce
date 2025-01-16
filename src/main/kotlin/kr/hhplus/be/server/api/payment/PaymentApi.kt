@@ -38,5 +38,6 @@ interface PaymentApi {
     fun pay(
         @RequestBody(description = "결제 요청 정보", required = true)
         request: PaymentRequest,
+        authenticationId: Long,
     ): ResponseEntity<CustomResponse<Unit>>
 }

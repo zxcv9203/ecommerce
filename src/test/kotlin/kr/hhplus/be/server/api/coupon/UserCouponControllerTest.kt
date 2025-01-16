@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.api.coupon
 
 import kr.hhplus.be.server.api.coupon.request.IssueCouponRequest
-import kr.hhplus.be.server.api.coupon.response.CouponResponse
+import kr.hhplus.be.server.application.coupon.info.CouponInfo
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.helper.ConcurrentTestHelper
@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -65,6 +66,7 @@ class UserCouponControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/users/{userId}/coupons", userId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isCreated)
                 .andExpect(jsonPath("$.code").value(SuccessCode.COUPON_ISSUE_SUCCESS.status.value()))
@@ -78,6 +80,39 @@ class UserCouponControllerTest : IntegrationTest() {
         }
 
         @Test
+        @DisplayName("[실패] 인증 헤더의 사용자 ID가 유효하지 않으면 401 반환")
+        fun test_fail_when_invalid_user_id() {
+            val userId = 1L
+            val request = IssueCouponRequest(1L)
+
+            mockMvc
+                .perform(
+                    post("/api/v1/users/{userId}/coupons", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)),
+                ).andExpect(status().isUnauthorized)
+                .andExpect(jsonPath("$.code").value(ErrorCode.UNAUTHORIZED.status.value()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.UNAUTHORIZED.message))
+        }
+
+        @Test
+        @DisplayName("[실패] 인증 아이디와 사용자 아이디가 다르면 403 반환")
+        fun test_fail_when_user_id_and_auth_id_diff() {
+            val userId = 1L
+            val request = IssueCouponRequest(1L)
+
+            mockMvc
+                .perform(
+                    post("/api/v1/users/{userId}/coupons", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, 2L)
+                        .content(objectMapper.writeValueAsString(request)),
+                ).andExpect(status().isForbidden)
+                .andExpect(jsonPath("$.code").value(ErrorCode.FORBIDDEN.status.value()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.FORBIDDEN.message))
+        }
+
+        @Test
         @DisplayName("[실패] 존재하지 않는 사용자인 경우 404 반환")
         fun test_fail_when_user_not_found() {
             val userId = 0L
@@ -87,6 +122,7 @@ class UserCouponControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/users/{userId}/coupons", userId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isNotFound)
                 .andExpect(jsonPath("$.code").value(ErrorCode.USER_NOT_FOUND.status.value()))
@@ -103,6 +139,7 @@ class UserCouponControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/users/{userId}/coupons", userId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isNotFound)
                 .andExpect(jsonPath("$.code").value(ErrorCode.COUPON_NOT_FOUND.status.value()))
@@ -120,6 +157,7 @@ class UserCouponControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/users/{userId}/coupons", userId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isBadRequest)
                 .andExpect(jsonPath("$.code").value(ErrorCode.COUPON_OUT_OF_COUNT.status.value()))
@@ -137,6 +175,7 @@ class UserCouponControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/users/{userId}/coupons", userId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isBadRequest)
                 .andExpect(jsonPath("$.code").value(ErrorCode.COUPON_ISSUE_EXPIRED.status.value()))
@@ -154,6 +193,7 @@ class UserCouponControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/users/{userId}/coupons", userId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isBadRequest)
                 .andExpect(jsonPath("$.code").value(ErrorCode.COUPON_ISSUE_NOT_STARTED.status.value()))
@@ -170,12 +210,14 @@ class UserCouponControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/users/{userId}/coupons", userId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 )
             mockMvc
                 .perform(
                     post("/api/v1/users/{userId}/coupons", userId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(request)),
                 ).andExpect(status().isBadRequest)
                 .andExpect(jsonPath("$.code").value(ErrorCode.COUPON_ALREADY_ISSUED.status.value()))
@@ -194,6 +236,7 @@ class UserCouponControllerTest : IntegrationTest() {
                             .perform(
                                 post("/api/v1/users/{userId}/coupons", index + 1)
                                     .contentType(MediaType.APPLICATION_JSON)
+                                    .header(HttpHeaders.AUTHORIZATION, index + 1)
                                     .content(objectMapper.writeValueAsString(request)),
                             ).andReturn()
                     if (httpResponse.response.status != HttpStatus.CREATED.value()) {
@@ -221,16 +264,45 @@ class UserCouponControllerTest : IntegrationTest() {
                 .perform(
                     post("/api/v1/users/{userId}/coupons", userId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header(HttpHeaders.AUTHORIZATION, userId)
                         .content(objectMapper.writeValueAsString(IssueCouponRequest(1L))),
                 )
             mockMvc
                 .perform(
-                    get("/api/v1/users/{userId}/coupons", userId),
+                    get("/api/v1/users/{userId}/coupons", userId)
+                        .header(HttpHeaders.AUTHORIZATION, userId),
                 ).andExpect(status().isOk)
                 .andExpect(jsonPath("$.code").value(SuccessCode.COUPON_LIST_QUERY.status.value()))
                 .andExpect(jsonPath("$.message").value(SuccessCode.COUPON_LIST_QUERY.message))
-                .andExpect(jsonPath("$.data.coupons", Matchers.hasSize<CouponResponse>(1)))
+                .andExpect(jsonPath("$.data.coupons", Matchers.hasSize<CouponInfo>(1)))
                 .andExpect(jsonPath("$.data.hasNext").value(false))
+        }
+
+        @Test
+        @DisplayName("[실패] 인증 헤더의 사용자 ID가 유효하지 않으면 401 반환")
+        fun test_fail_when_invalid_user_id() {
+            val userId = 1L
+
+            mockMvc
+                .perform(
+                    get("/api/v1/users/{userId}/coupons", userId),
+                ).andExpect(status().isUnauthorized)
+                .andExpect(jsonPath("$.code").value(ErrorCode.UNAUTHORIZED.status.value()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.UNAUTHORIZED.message))
+        }
+
+        @Test
+        @DisplayName("[실패] 인증 아이디와 사용자 아이디가 다르면 403 반환")
+        fun test_fail_when_user_id_and_auth_id_diff() {
+            val userId = 1L
+
+            mockMvc
+                .perform(
+                    get("/api/v1/users/{userId}/coupons", userId)
+                        .header(HttpHeaders.AUTHORIZATION, 2L),
+                ).andExpect(status().isForbidden)
+                .andExpect(jsonPath("$.code").value(ErrorCode.FORBIDDEN.status.value()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.FORBIDDEN.message))
         }
 
         @Test
@@ -240,7 +312,8 @@ class UserCouponControllerTest : IntegrationTest() {
 
             mockMvc
                 .perform(
-                    get("/api/v1/users/{userId}/coupons", userId),
+                    get("/api/v1/users/{userId}/coupons", userId)
+                        .header(HttpHeaders.AUTHORIZATION, userId),
                 ).andExpect(status().isNotFound)
                 .andExpect(jsonPath("$.code").value(ErrorCode.USER_NOT_FOUND.status.value()))
                 .andExpect(jsonPath("$.message").value(ErrorCode.USER_NOT_FOUND.message))

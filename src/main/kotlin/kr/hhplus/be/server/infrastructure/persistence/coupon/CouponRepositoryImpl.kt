@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.infrastructure.persistence.coupon
 
-import kr.hhplus.be.server.api.coupon.response.CouponResponse
+import kr.hhplus.be.server.application.coupon.info.CouponInfo
 import kr.hhplus.be.server.domain.coupon.Coupon
 import kr.hhplus.be.server.domain.coupon.CouponRepository
 import org.springframework.data.domain.Pageable
@@ -22,7 +22,7 @@ class CouponRepositoryImpl(
     override fun findAllByUserId(
         userId: Long,
         pageable: Pageable,
-    ): Slice<CouponResponse> = jpaCouponRepository.findAllByUserId(userId, pageable)
+    ): Slice<CouponInfo> = jpaCouponRepository.findAllByUserId(userId, pageable)
 
     override fun findById(couponId: Long): Coupon? = jpaCouponRepository.findByIdOrNull(couponId)
 

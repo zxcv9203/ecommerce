@@ -10,6 +10,8 @@ enum class ErrorCode(
     USER_BALANCE_BELOW_MINIMUM(HttpStatus.BAD_REQUEST, "충전 금액은 최소 10,000원 이상이어야 합니다."),
     USER_BALANCE_EXCEEDS_LIMIT(HttpStatus.BAD_REQUEST, "잔액 상한을 초과할 수 없습니다."),
     USER_BALANCE_CHARGE_FAILED(HttpStatus.BAD_REQUEST, "잔액 충전에 실패했습니다."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증되지 않은 사용자입니다."),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "권한이 없습니다."),
     COUPON_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 쿠폰입니다."),
     COUPON_ISSUE_NOT_STARTED(HttpStatus.BAD_REQUEST, "쿠폰 발급 기간이 아직 시작되지 않았습니다."),
     COUPON_ISSUE_EXPIRED(HttpStatus.BAD_REQUEST, "쿠폰 발급 기간이 지났습니다."),

@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.infrastructure.persistence.product
 
 import jakarta.persistence.LockModeType
-import kr.hhplus.be.server.api.product.response.PopularProductResponse
+import kr.hhplus.be.server.application.product.info.PopularProductInfo
 import kr.hhplus.be.server.domain.product.Product
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Lock
@@ -20,7 +20,7 @@ interface DataJpaProductRepository : JpaRepository<Product, Long> {
 
     @Query(
         """
-    SELECT new kr.hhplus.be.server.api.product.response.PopularProductResponse(
+    SELECT new kr.hhplus.be.server.application.product.info.PopularProductInfo(
         p.id,
         p.name, 
         p.price,
@@ -35,5 +35,5 @@ interface DataJpaProductRepository : JpaRepository<Product, Long> {
     LIMIT 5
     """,
     )
-    fun findPopularProducts(): List<PopularProductResponse>
+    fun findPopularProducts(): List<PopularProductInfo>
 }

@@ -38,5 +38,6 @@ interface OrderApi {
     fun order(
         @RequestBody(description = "주문 요청 정보", required = true)
         request: OrderRequest,
+        authenticationId: Long,
     ): ResponseEntity<CustomResponse<OrderResponse>>
 }

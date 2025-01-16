@@ -1,12 +1,12 @@
 package kr.hhplus.be.server.api.order.response
 
-import kr.hhplus.be.server.domain.order.Order
+import kr.hhplus.be.server.application.order.info.OrderInfo
 
 data class OrderResponse(
     val orderId: Long,
 )
 
-fun Order.toResponse() =
+fun OrderInfo.toResponse() =
     OrderResponse(
-        orderId = id,
+        orderId = orderId,
     )

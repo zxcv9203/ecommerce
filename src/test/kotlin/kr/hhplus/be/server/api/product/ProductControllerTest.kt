@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.api.product
 
-import kr.hhplus.be.server.api.product.response.PopularProductResponse
-import kr.hhplus.be.server.api.product.response.ProductResponse
+import kr.hhplus.be.server.application.product.info.PopularProductInfo
+import kr.hhplus.be.server.application.product.info.ProductInfo
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.domain.order.OrderStatus
 import kr.hhplus.be.server.infrastructure.persistence.order.JpaOrderItemRepository
@@ -92,7 +92,7 @@ class ProductControllerTest : IntegrationTest() {
                 .andExpect(jsonPath("$.code").value(SuccessCode.PRODUCT_QUERY.status.value()))
                 .andExpect(jsonPath("$.message").value(SuccessCode.PRODUCT_QUERY.message))
                 .andExpect(jsonPath("$.data.products").isArray)
-                .andExpect(jsonPath("$.data.products", Matchers.hasSize<ProductResponse>(10)))
+                .andExpect(jsonPath("$.data.products", Matchers.hasSize<ProductInfo>(10)))
                 .andExpect(jsonPath("$.data.hasNext").value(true))
         }
 
@@ -108,7 +108,7 @@ class ProductControllerTest : IntegrationTest() {
                 .andExpect(jsonPath("$.code").value(SuccessCode.PRODUCT_QUERY.status.value()))
                 .andExpect(jsonPath("$.message").value(SuccessCode.PRODUCT_QUERY.message))
                 .andExpect(jsonPath("$.data.products").isArray)
-                .andExpect(jsonPath("$.data.products", Matchers.hasSize<ProductResponse>(1)))
+                .andExpect(jsonPath("$.data.products", Matchers.hasSize<ProductInfo>(1)))
                 .andExpect(jsonPath("$.data.hasNext").value(false))
         }
     }
@@ -125,7 +125,7 @@ class ProductControllerTest : IntegrationTest() {
                 .andExpect(jsonPath("$.code").value(SuccessCode.POPULAR_PRODUCT_QUERY.status.value()))
                 .andExpect(jsonPath("$.message").value(SuccessCode.POPULAR_PRODUCT_QUERY.message))
                 .andExpect(jsonPath("$.data.products").isArray)
-                .andExpect(jsonPath("$.data.products", Matchers.hasSize<PopularProductResponse>(5)))
+                .andExpect(jsonPath("$.data.products", Matchers.hasSize<PopularProductInfo>(5)))
         }
     }
 }

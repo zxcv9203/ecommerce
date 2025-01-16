@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.domain.user
 
-import kr.hhplus.be.server.api.user.response.UserBalanceResponse
+import kr.hhplus.be.server.application.user.info.UserBalanceInfo
 import kr.hhplus.be.server.application.user.command.ChargeBalanceCommand
 import kr.hhplus.be.server.application.user.command.UseBalanceCommand
 import kr.hhplus.be.server.common.constant.ErrorCode
@@ -20,7 +20,7 @@ class UserService(
             ?: throw BusinessException(ErrorCode.USER_NOT_FOUND)
 
     @Transactional
-    fun chargeBalance(command: ChargeBalanceCommand): UserBalanceResponse {
+    fun chargeBalance(command: ChargeBalanceCommand): UserBalanceInfo {
         val chargeBalanceUser =
             getById(command.userId)
                 .apply { this.charge(command.amount) }
@@ -36,7 +36,7 @@ class UserService(
             .createByCharge(savedUser, command.amount)
             .also { balanceHistoryRepository.save(it) }
 
-        return UserBalanceResponse(savedUser.balance)
+        return UserBalanceInfo(savedUser.balance)
     }
 
     @Transactional
