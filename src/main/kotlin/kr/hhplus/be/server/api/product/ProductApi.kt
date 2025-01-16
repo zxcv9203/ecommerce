@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import kr.hhplus.be.server.api.product.response.PopularProductsResponse
 import kr.hhplus.be.server.api.product.response.ProductsResponse
+import kr.hhplus.be.server.application.product.info.PopularProductsInfo
+import kr.hhplus.be.server.application.product.info.ProductsInfo
 import kr.hhplus.be.server.common.model.CustomResponse
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable

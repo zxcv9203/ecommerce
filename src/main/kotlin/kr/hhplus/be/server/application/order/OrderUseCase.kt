@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.application.order
 
-import kr.hhplus.be.server.api.order.response.OrderResponse
-import kr.hhplus.be.server.api.order.response.toResponse
+import kr.hhplus.be.server.application.order.info.OrderInfo
+import kr.hhplus.be.server.application.order.info.toResponse
 import kr.hhplus.be.server.application.order.command.OrderCommand
 import kr.hhplus.be.server.application.product.info.getTotalPrice
 import kr.hhplus.be.server.domain.coupon.CouponService
@@ -21,7 +21,7 @@ class OrderUseCase(
     private val discountService: DiscountService,
 ) {
     @Transactional
-    fun order(command: OrderCommand): OrderResponse {
+    fun order(command: OrderCommand): OrderInfo {
         val user = userService.getById(command.userId)
         val products = productService.findOrderableProductByIds(command.items)
 

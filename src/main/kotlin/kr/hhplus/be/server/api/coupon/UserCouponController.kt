@@ -2,6 +2,7 @@ package kr.hhplus.be.server.api.coupon
 
 import kr.hhplus.be.server.api.coupon.request.IssueCouponRequest
 import kr.hhplus.be.server.api.coupon.response.CouponsResponse
+import kr.hhplus.be.server.api.coupon.response.toResponse
 import kr.hhplus.be.server.application.coupon.CouponUseCase
 import kr.hhplus.be.server.application.coupon.command.FindUserCouponCommand
 import kr.hhplus.be.server.common.constant.SuccessCode
@@ -23,6 +24,7 @@ class UserCouponController(
     ): ResponseEntity<CustomResponse<CouponsResponse>> =
         FindUserCouponCommand(userId, pageable)
             .let { couponUseCase.findAllByUserId(it) }
+            .toResponse()
             .let { CustomResponse.success(SuccessCode.COUPON_LIST_QUERY, it) }
             .let { ResponseEntity.status(HttpStatus.OK).body(it) }
 

@@ -2,6 +2,7 @@ package kr.hhplus.be.server.api.order
 
 import kr.hhplus.be.server.api.order.request.OrderRequest
 import kr.hhplus.be.server.api.order.response.OrderResponse
+import kr.hhplus.be.server.api.order.response.toResponse
 import kr.hhplus.be.server.application.order.OrderUseCase
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.common.model.CustomResponse
@@ -24,6 +25,7 @@ class OrderController(
         request
             .toCommand()
             .let { orderUseCase.order(it) }
+            .toResponse()
             .let { CustomResponse.success(SuccessCode.ORDER_CREATED, it) }
             .let { ResponseEntity.status(HttpStatus.CREATED).body(it) }
 }

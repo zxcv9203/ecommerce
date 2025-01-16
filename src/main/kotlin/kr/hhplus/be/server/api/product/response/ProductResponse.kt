@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.api.product.response
 
-import kr.hhplus.be.server.domain.product.Product
+import kr.hhplus.be.server.application.product.info.ProductInfo
+import kr.hhplus.be.server.application.product.info.ProductsInfo
 
 data class ProductResponse(
     val id: Long,
@@ -14,10 +15,16 @@ data class ProductsResponse(
     val hasNext: Boolean,
 )
 
-fun Product.toResponse() =
+fun ProductInfo.toResponse() =
     ProductResponse(
         id = id,
         name = name,
         price = price,
         stock = stock,
+    )
+
+fun ProductsInfo.toResponse() =
+    ProductsResponse(
+        products = products.map { it.toResponse() },
+        hasNext = hasNext,
     )

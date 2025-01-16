@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.infrastructure.persistence.product
 
-import kr.hhplus.be.server.api.product.response.PopularProductResponse
+import kr.hhplus.be.server.application.product.info.PopularProductInfo
 import kr.hhplus.be.server.domain.product.Product
 import kr.hhplus.be.server.domain.product.ProductRepository
 import org.springframework.data.domain.Pageable
@@ -19,5 +19,5 @@ class JpaProductRepository(
 
     override fun saveAll(products: List<Product>): List<Product> = dataJpaProductRepository.saveAll(products)
 
-    override fun findPopularProducts(): List<PopularProductResponse> = dataJpaProductRepository.findPopularProducts()
+    override fun findPopularProducts(): List<PopularProductInfo> = dataJpaProductRepository.findPopularProducts()
 }

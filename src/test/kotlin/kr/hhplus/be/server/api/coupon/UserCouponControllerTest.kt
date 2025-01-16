@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.api.coupon
 
 import kr.hhplus.be.server.api.coupon.request.IssueCouponRequest
-import kr.hhplus.be.server.api.coupon.response.CouponResponse
+import kr.hhplus.be.server.application.coupon.info.CouponInfo
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.helper.ConcurrentTestHelper
@@ -229,7 +229,7 @@ class UserCouponControllerTest : IntegrationTest() {
                 ).andExpect(status().isOk)
                 .andExpect(jsonPath("$.code").value(SuccessCode.COUPON_LIST_QUERY.status.value()))
                 .andExpect(jsonPath("$.message").value(SuccessCode.COUPON_LIST_QUERY.message))
-                .andExpect(jsonPath("$.data.coupons", Matchers.hasSize<CouponResponse>(1)))
+                .andExpect(jsonPath("$.data.coupons", Matchers.hasSize<CouponInfo>(1)))
                 .andExpect(jsonPath("$.data.hasNext").value(false))
         }
 

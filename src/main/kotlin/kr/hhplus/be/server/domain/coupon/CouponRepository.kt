@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.domain.coupon
 
-import kr.hhplus.be.server.api.coupon.response.CouponResponse
+import kr.hhplus.be.server.application.coupon.info.CouponInfo
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 
@@ -15,7 +15,7 @@ interface CouponRepository {
     fun findAllByUserId(
         userId: Long,
         pageable: Pageable,
-    ): Slice<CouponResponse>
+    ): Slice<CouponInfo>
 
     fun findById(couponId: Long): Coupon?
 

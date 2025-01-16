@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.api.user
 
+import com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.classic.methods.HttpHead
 import kr.hhplus.be.server.api.user.request.UserBalanceRequest
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -72,6 +74,7 @@ class UserBalanceControllerTest : IntegrationTest() {
             mockMvc
                 .perform(
                     patch("/api/v1/users/{userId}/balance", userId)
+                        .header(HttpHeaders.AUTHORIZATION, "1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                             objectMapper.writeValueAsString(UserBalanceRequest(amount)),

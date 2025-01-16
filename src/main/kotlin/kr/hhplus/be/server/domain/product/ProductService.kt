@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.domain.product
 
-import kr.hhplus.be.server.api.product.response.PopularProductResponse
-import kr.hhplus.be.server.api.product.response.ProductResponse
-import kr.hhplus.be.server.api.product.response.toResponse
+import kr.hhplus.be.server.application.product.info.PopularProductInfo
+import kr.hhplus.be.server.application.product.info.ProductInfo
+import kr.hhplus.be.server.application.product.info.toInfo
 import kr.hhplus.be.server.application.order.command.OrderItemCommand
 import kr.hhplus.be.server.application.order.command.toSortedProductIds
 import kr.hhplus.be.server.application.product.info.OrderItemInfo
@@ -18,10 +18,10 @@ import org.springframework.transaction.annotation.Transactional
 class ProductService(
     private val productRepository: ProductRepository,
 ) {
-    fun findAll(pageable: Pageable): Slice<ProductResponse> =
+    fun findAll(pageable: Pageable): Slice<ProductInfo> =
         productRepository
             .findAll(pageable)
-            .map { it.toResponse() }
+            .map { it.toInfo() }
 
     fun findOrderableProductByIds(items: List<OrderItemCommand>): List<OrderItemInfo> {
         val productIds = items.map { it.productId }
@@ -52,5 +52,5 @@ class ProductService(
         productRepository.saveAll(products)
     }
 
-    fun findPopularProducts(): List<PopularProductResponse> = productRepository.findPopularProducts()
+    fun findPopularProducts(): List<PopularProductInfo> = productRepository.findPopularProducts()
 }
