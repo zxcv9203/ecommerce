@@ -2,6 +2,7 @@ package kr.hhplus.be.server.template
 
 import kr.hhplus.be.server.helper.DatabaseCleanUp
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -21,7 +22,7 @@ class IntegrationTest {
 
     protected val objectMapper = ObjectMapper()
 
-    @AfterEach
+    @BeforeEach
     fun cleanUp() {
         databaseCleanUp.execute()
     }

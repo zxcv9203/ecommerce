@@ -6,7 +6,7 @@ import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.helper.ConcurrentTestHelper
 import kr.hhplus.be.server.infrastructure.persistence.coupon.DataJpaCouponPolicyRepository
-import kr.hhplus.be.server.infrastructure.persistence.coupon.JpaCouponRepository
+import kr.hhplus.be.server.infrastructure.persistence.coupon.DataJpaCouponRepository
 import kr.hhplus.be.server.infrastructure.persistence.user.DataJpaUserRepository
 import kr.hhplus.be.server.stub.CouponFixture
 import kr.hhplus.be.server.stub.UserFixture
@@ -36,7 +36,7 @@ class UserCouponControllerTest : IntegrationTest() {
     private lateinit var dataJpaCouponPolicyRepository: DataJpaCouponPolicyRepository
 
     @Autowired
-    private lateinit var jpaCouponRepository: JpaCouponRepository
+    private lateinit var dataJpaCouponRepository: DataJpaCouponRepository
 
     @BeforeEach
     fun setUp() {
@@ -73,7 +73,7 @@ class UserCouponControllerTest : IntegrationTest() {
                 .andExpect(jsonPath("$.message").value(SuccessCode.COUPON_ISSUE_SUCCESS.message))
 
             val coupon =
-                jpaCouponRepository.findByIdOrNull(1L)
+                dataJpaCouponRepository.findByIdOrNull(1L)
                     ?: throw AssertionError("Coupon not found")
 
             assertThat(coupon.user.id).isEqualTo(userId)
