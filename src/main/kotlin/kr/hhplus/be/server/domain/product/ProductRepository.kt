@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.domain.product
 
-import kr.hhplus.be.server.api.product.response.PopularProductResponse
+import kr.hhplus.be.server.application.product.info.PopularProductInfo
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 
@@ -13,5 +13,5 @@ interface ProductRepository {
 
     fun saveAll(products: List<Product>): List<Product>
 
-    fun findPopularProducts(): List<PopularProductResponse>
+    fun findPopularProducts(): List<PopularProductInfo>
 }

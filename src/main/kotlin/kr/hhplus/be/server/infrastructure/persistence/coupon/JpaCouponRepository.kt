@@ -1,38 +1,30 @@
 package kr.hhplus.be.server.infrastructure.persistence.coupon
 
-import kr.hhplus.be.server.api.coupon.response.CouponResponse
+import kr.hhplus.be.server.application.coupon.info.CouponInfo
 import kr.hhplus.be.server.domain.coupon.Coupon
+import kr.hhplus.be.server.domain.coupon.CouponRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.findByIdOrNull
+import org.springframework.stereotype.Repository
 
-interface JpaCouponRepository : JpaRepository<Coupon, Long> {
-    @Query(
-        """
-        SELECT new kr.hhplus.be.server.api.coupon.response.CouponResponse(
-            c.id,
-            c.policy.id,
-            p.name,
-            p.description,
-            p.discountType,
-            p.discountAmount,
-            c.status
-        )
-        FROM Coupon c
-        JOIN c.policy p
-        WHERE c.user.id = :userId
-        """,
-    )
-    fun findAllByUserId(
-        userId: Long,
-        pageable: Pageable,
-    ): Slice<CouponResponse>
+@Repository
+class JpaCouponRepository(
+    private val dataJpaCouponRepository: DataJpaCouponRepository,
+) : CouponRepository {
+    override fun save(coupon: Coupon): Coupon = dataJpaCouponRepository.saveAndFlush(coupon)
 
-    fun findByUserIdAndPolicyId(
+    override fun findByUserIdAndPolicyId(
         userId: Long,
         couponPolicyId: Long,
-    ): Coupon?
+    ): Coupon? = dataJpaCouponRepository.findByUserIdAndPolicyId(userId, couponPolicyId)
 
-    fun findByOrderId(orderId: Long): Coupon?
+    override fun findAllByUserId(
+        userId: Long,
+        pageable: Pageable,
+    ): Slice<CouponInfo> = dataJpaCouponRepository.findAllByUserId(userId, pageable)
+
+    override fun findById(couponId: Long): Coupon? = dataJpaCouponRepository.findByIdOrNull(couponId)
+
+    override fun findByOrderId(orderId: Long): Coupon? = dataJpaCouponRepository.findByOrderId(orderId)
 }

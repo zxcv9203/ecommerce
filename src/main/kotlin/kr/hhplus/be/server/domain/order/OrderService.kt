@@ -19,12 +19,13 @@ class OrderService(
         user: User,
         products: List<OrderItemInfo>,
         coupon: Coupon?,
+        paymentPrice: Long,
     ): Order {
         val totalPrice = products.getTotalPrice()
-        coupon?.getDiscountedPrice(totalPrice)
 
-        val order = Order(user, totalPrice)
+        val order = Order.create(user, totalPrice, paymentPrice)
         orderRepository.save(order)
+
         products
             .map { it.toOrderItem(order) }
             .let { orderItemRepository.saveAll(it) }

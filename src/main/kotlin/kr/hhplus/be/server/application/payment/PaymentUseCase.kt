@@ -22,6 +22,7 @@ class PaymentUseCase(
     @Transactional
     fun pay(command: PaymentCommand) {
         val user = userService.getById(command.userId)
+
         val order =
             orderService
                 .getByIdAndUserIdWithLock(command.orderId, user.id)
@@ -33,11 +34,10 @@ class PaymentUseCase(
                 .map { it.toCommand() }
 
         val coupon = couponService.findByOrderId(order.id)
-        val payPrice = coupon?.getDiscountedPrice(order.totalPrice) ?: order.totalPrice
-        userService.useBalance(user.toUseBalanceCommand(payPrice))
+        userService.useBalance(user.toUseBalanceCommand(order.discountPrice))
         coupon?.let { couponService.use(it) }
         productService.reduceStock(orderItems)
-        paymentService.pay(order, payPrice)
+        paymentService.pay(order)
         orderService.confirm(order)
     }
 }

@@ -31,12 +31,13 @@ CREATE TABLE IF NOT EXISTS products
 
 CREATE TABLE IF NOT EXISTS orders
 (
-    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id     BIGINT      NOT NULL COMMENT '주문자 ID',
-    total_price BIGINT      NOT NULL COMMENT '총 가격',
-    status      VARCHAR(20) NOT NULL COMMENT '주문 상태',
-    created_at  DATETIME    NOT NULL COMMENT '생성 시간',
-    updated_at  DATETIME    NOT NULL COMMENT '수정 시간'
+    id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id       BIGINT      NOT NULL COMMENT '주문자 ID',
+    total_price   BIGINT      NOT NULL COMMENT '총 가격',
+    payment_price BIGINT      NOT NULL COMMENT '결제 가격',
+    status        VARCHAR(20) NOT NULL COMMENT '주문 상태',
+    created_at    DATETIME    NOT NULL COMMENT '생성 시간',
+    updated_at    DATETIME    NOT NULL COMMENT '수정 시간'
 );
 
 CREATE TABLE IF NOT EXISTS order_items

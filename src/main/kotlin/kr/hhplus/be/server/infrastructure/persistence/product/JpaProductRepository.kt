@@ -1,39 +1,23 @@
 package kr.hhplus.be.server.infrastructure.persistence.product
 
-import jakarta.persistence.LockModeType
-import kr.hhplus.be.server.api.product.response.PopularProductResponse
+import kr.hhplus.be.server.application.product.info.PopularProductInfo
 import kr.hhplus.be.server.domain.product.Product
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.data.jpa.repository.Lock
-import org.springframework.data.jpa.repository.Query
+import kr.hhplus.be.server.domain.product.ProductRepository
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Slice
+import org.springframework.stereotype.Repository
 
-interface JpaProductRepository : JpaRepository<Product, Long> {
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query(
-        """
-            SELECT p
-            FROM Product p
-            WHERE p.id IN :ids
-        """,
-    )
-    fun findAllByIdsWithLock(ids: List<Long>): List<Product>
+@Repository
+class JpaProductRepository(
+    private val dataJpaProductRepository: DataJpaProductRepository,
+) : ProductRepository {
+    override fun findAll(pageable: Pageable): Slice<Product> = dataJpaProductRepository.findAll(pageable)
 
-    @Query(
-        """
-    SELECT new kr.hhplus.be.server.api.product.response.PopularProductResponse(
-        p.id,
-        p.name, 
-        p.price,
-        SUM(oi.count)
-    )
-    FROM Product p
-    JOIN OrderItem oi ON p.id = oi.productId
-    JOIN Order o ON oi.order.id = o.id
-    WHERE o.status = 'CONFIRMED'
-    GROUP BY p.id, p.name, p.price
-    ORDER BY SUM(oi.count) DESC
-    LIMIT 5
-    """,
-    )
-    fun findPopularProducts(): List<PopularProductResponse>
+    override fun findAllByIds(ids: List<Long>): List<Product> = dataJpaProductRepository.findAllById(ids)
+
+    override fun findAllByIdsWithLock(ids: List<Long>): List<Product> = dataJpaProductRepository.findAllByIdsWithLock(ids)
+
+    override fun saveAll(products: List<Product>): List<Product> = dataJpaProductRepository.saveAll(products)
+
+    override fun findPopularProducts(): List<PopularProductInfo> = dataJpaProductRepository.findPopularProducts()
 }

@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.domain.coupon
 
-import kr.hhplus.be.server.api.coupon.response.CouponResponse
+import kr.hhplus.be.server.application.coupon.info.CouponInfo
 import kr.hhplus.be.server.application.coupon.command.FindUserCouponCommand
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.exception.BusinessException
@@ -31,7 +31,7 @@ class CouponService(
         couponRepository.save(coupon)
     }
 
-    fun findAllByUserId(command: FindUserCouponCommand): Slice<CouponResponse> =
+    fun findAllByUserId(command: FindUserCouponCommand): Slice<CouponInfo> =
         couponRepository.findAllByUserId(command.userId, command.pageable)
 
     fun getOrderableCoupon(

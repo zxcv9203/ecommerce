@@ -17,6 +17,9 @@ class Order(
     @Column(name = "total_price", nullable = false)
     @Comment("총 가격")
     val totalPrice: Long,
+    @Column(name = "payment_price", nullable = false)
+    @Comment("결제 가격")
+    var discountPrice: Long,
     @Column(name = "status", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     @Comment("주문 상태")
@@ -34,5 +37,13 @@ class Order(
     fun confirm() {
         ensureNotPaid()
         status = OrderStatus.CONFIRMED
+    }
+
+    companion object {
+        fun create(
+            user: User,
+            totalPrice: Long,
+            paymentPrice: Long,
+        ): Order = Order(user, totalPrice, paymentPrice)
     }
 }
