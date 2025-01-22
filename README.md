@@ -29,3 +29,6 @@ docker-compose up -d
 
 [API 문서](./docs/Api-spec.md)
 [스웨거 스크린샷](./docs/swagger.md)
+
+## 동시성 이슈 보고서
+[동시성 문제 해결을 위한 Lock 제어 방식](./docs/Lock.md)
