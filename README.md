@@ -32,3 +32,5 @@ docker-compose up -d
 
 ## 동시성 이슈 보고서
 [동시성 문제 해결을 위한 Lock 제어 방식](./docs/Lock.md)
+
+[시나리오에서 발생할 수 있는 동시성 이슈](./docs/ConcurrencyIssue.md)
