@@ -36,7 +36,7 @@ class CouponServiceTest {
             val user = UserFixture.create()
             val couponPolicyId = 1L
 
-            every { couponPolicyRepository.findByIdWithLock(couponPolicyId) } returns null
+            every { couponPolicyRepository.findById(couponPolicyId) } returns null
 
             assertThatThrownBy { couponService.issue(user, couponPolicyId) }
                 .isInstanceOf(BusinessException::class.java)

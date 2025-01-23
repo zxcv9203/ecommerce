@@ -22,7 +22,7 @@ class CouponService(
         couponPolicyId: Long,
     ) {
         val couponPolicy =
-            couponPolicyRepository.findByIdWithLock(couponPolicyId)
+            couponPolicyRepository.findById(couponPolicyId)
                 ?: throw BusinessException(ErrorCode.COUPON_NOT_FOUND)
         couponRepository
             .findByUserIdAndPolicyId(user.id, couponPolicyId)

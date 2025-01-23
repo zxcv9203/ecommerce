@@ -36,6 +36,10 @@ class CouponPolicy(
     @Column(name = "discount_amount", nullable = false)
     @Comment("할인 금액")
     val discountAmount: Long,
+    @Version
+    @Column(name = "version", nullable = false)
+    @Comment("낙관적락을 위한 버전")
+    val version: Long = 0,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
