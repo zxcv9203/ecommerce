@@ -19,6 +19,7 @@ group = "kr.hhplus.be"
 version = getGitHash()
 val swaggerVersion = "2.7.0"
 val mockkVersion = "1.13.14"
+val redissonVersion = "3.43.0"
 
 java {
     toolchain {
@@ -55,6 +56,8 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$swaggerVersion")
     // DB
     runtimeOnly("com.mysql:mysql-connector-j")
+
+    implementation("org.redisson:redisson-spring-boot-starter:$redissonVersion")
 
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")

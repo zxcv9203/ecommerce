@@ -86,6 +86,7 @@ CREATE TABLE IF NOT EXISTS coupon_policies
     end_time        DATETIME     NOT NULL COMMENT '종료 시간',
     discount_type   VARCHAR(20)  NOT NULL COMMENT '할인 유형',
     discount_amount BIGINT       NOT NULL COMMENT '할인 금액',
+    version         BIGINT       NOT NULL DEFAULT 0 COMMENT '낙관적락을 위한 버전',
     created_at      DATETIME     NOT NULL COMMENT '생성 시간',
     updated_at      DATETIME     NOT NULL COMMENT '수정 시간'
 );
