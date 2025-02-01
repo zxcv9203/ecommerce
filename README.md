@@ -34,3 +34,6 @@ docker-compose up -d
 [동시성 문제 해결을 위한 Lock 제어 방식](./docs/Lock.md)
 
 [시나리오에서 발생할 수 있는 동시성 이슈](./docs/ConcurrencyIssue.md)
+
+## 캐시 or Redis를 이용한 로직 개선
+[캐시 정리](./docs/cache.md)
