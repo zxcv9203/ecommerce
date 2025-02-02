@@ -37,3 +37,5 @@ docker-compose up -d
 
 ## 캐시 or Redis를 이용한 로직 개선
 [캐시 정리](./docs/cache.md)
+[redis를 이용한 로직 개선](./docs/redis.md)
+
