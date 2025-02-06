@@ -23,6 +23,9 @@ class ProductServiceTest {
     @MockK
     private lateinit var productRepository: ProductRepository
 
+    @MockK
+    private lateinit var popularProductCacheRepository: PopularProductCacheRepository
+
     @Nested
     @DisplayName("주문 가능한 상품 목록 조회")
     inner class FindOrderableProductByIds {

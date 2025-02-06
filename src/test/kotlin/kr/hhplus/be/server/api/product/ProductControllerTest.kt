@@ -4,8 +4,8 @@ import kr.hhplus.be.server.application.product.info.PopularProductInfo
 import kr.hhplus.be.server.application.product.info.ProductInfo
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.domain.order.OrderStatus
-import kr.hhplus.be.server.infrastructure.persistence.order.JpaOrderItemRepository
 import kr.hhplus.be.server.infrastructure.persistence.order.DataJpaOrderRepository
+import kr.hhplus.be.server.infrastructure.persistence.order.DataJpaOrderItemRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.DataJpaProductRepository
 import kr.hhplus.be.server.stub.OrderFixture
 import kr.hhplus.be.server.stub.ProductFixture
@@ -28,7 +28,7 @@ class ProductControllerTest : IntegrationTest() {
     private lateinit var dataJpaOrderRepository: DataJpaOrderRepository
 
     @Autowired
-    private lateinit var jpaOrderItemRepository: JpaOrderItemRepository
+    private lateinit var dataJpaOrderItemRepository: DataJpaOrderItemRepository
 
     @BeforeEach
     fun setUp() {
@@ -67,14 +67,14 @@ class ProductControllerTest : IntegrationTest() {
                 OrderFixture.createOrderItem(order = confirmedOrders[4], productId = products[4].id, quantity = 1),
                 OrderFixture.createOrderItem(order = confirmedOrders[4], productId = products[5].id, quantity = 2),
             )
-        jpaOrderItemRepository.saveAllAndFlush(orderItems)
+        dataJpaOrderItemRepository.saveAllAndFlush(orderItems)
 
         val pendingOrderItems =
             listOf(
                 OrderFixture.createOrderItem(order = pendingOrders[0], productId = products[4].id, quantity = 4),
                 OrderFixture.createOrderItem(order = pendingOrders[1], productId = products[5].id, quantity = 6),
             )
-        jpaOrderItemRepository.saveAllAndFlush(pendingOrderItems)
+        dataJpaOrderItemRepository.saveAllAndFlush(pendingOrderItems)
     }
 
     @Nested
