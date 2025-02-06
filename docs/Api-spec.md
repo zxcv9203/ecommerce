@@ -261,7 +261,7 @@ Mock API에서는 userId가 1인 사용자만 정상적으로 요청이 가능�
         "policyId": 1,
         "name": "쿠폰 A",
         "description": "쿠폰 A 입니다.",
-        "discountType": "FIXED",
+        "discountType": "AMOUNT",
         "discountValue": 5000,
         "status": "ACTIVE",
         "issuedAt": "2025-01-01T10:00:00Z",
