@@ -6,9 +6,9 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class OrderItemRepositoryImpl(
-    private val jpaOrderItemRepository: JpaOrderItemRepository,
+    private val dataJpaOrderItemRepository: DataJpaOrderItemRepository,
 ) : OrderItemRepository {
-    override fun saveAll(orderItems: List<OrderItem>): List<OrderItem> = jpaOrderItemRepository.saveAll(orderItems)
+    override fun saveAll(orderItems: List<OrderItem>): List<OrderItem> = dataJpaOrderItemRepository.saveAll(orderItems)
 
-    override fun findByOrderId(orderId: Long): List<OrderItem> = jpaOrderItemRepository.findByOrderId(orderId)
+    override fun findByOrderId(orderId: Long): List<OrderItem> = dataJpaOrderItemRepository.findByOrderId(orderId)
 }
