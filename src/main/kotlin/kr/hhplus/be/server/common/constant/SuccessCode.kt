@@ -12,7 +12,7 @@ enum class SuccessCode(
     PRODUCT_QUERY(HttpStatus.OK, "상품 조회에 성공했습니다."),
     POPULAR_PRODUCT_QUERY(HttpStatus.OK, "인기 상품 조회에 성공했습니다."),
 
-    COUPON_ISSUE_SUCCESS(HttpStatus.CREATED, "쿠폰 발급에 성공했습니다."),
+    COUPON_ISSUE_SUCCESS(HttpStatus.OK, "쿠폰 발급 요청에 성공했습니다."),
     COUPON_LIST_QUERY(HttpStatus.OK, "내 쿠폰 목록 조회에 성공했습니다."),
 
     ORDER_CREATED(HttpStatus.CREATED, "주문이 성공적으로 생성되었습니다."),

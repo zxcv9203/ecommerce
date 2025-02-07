@@ -28,6 +28,7 @@ enum class ErrorCode(
     ORDER_ALREADY_PROCESSED(HttpStatus.BAD_REQUEST, "이미 처리된 주문입니다."),
     USER_BALANCE_USE_FAILED(HttpStatus.BAD_REQUEST, "잔액 사용에 실패했습니다."),
     INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST, "잔액이 부족합니다."),
+    COUPON_ISSUE_FAILED(HttpStatus.BAD_REQUEST, "쿠폰 발급에 실패했습니다."),
     LOCK_TIMEOUT(HttpStatus.BAD_REQUEST, "잠금 시간이 초과되었습니다."),
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다."),
