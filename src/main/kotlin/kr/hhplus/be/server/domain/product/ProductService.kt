@@ -1,12 +1,8 @@
 package kr.hhplus.be.server.domain.product
 
-import kr.hhplus.be.server.application.product.info.PopularProductInfo
-import kr.hhplus.be.server.application.product.info.ProductInfo
-import kr.hhplus.be.server.application.product.info.toInfo
 import kr.hhplus.be.server.application.order.command.OrderItemCommand
 import kr.hhplus.be.server.application.order.command.toSortedProductIds
-import kr.hhplus.be.server.application.product.info.OrderItemInfo
-import kr.hhplus.be.server.application.product.info.toOrderProductInfo
+import kr.hhplus.be.server.application.product.info.*
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.exception.BusinessException
 import org.springframework.data.domain.Pageable
@@ -17,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ProductService(
     private val productRepository: ProductRepository,
+    private val popularProductCacheRepository: PopularProductCacheRepository,
 ) {
     fun findAll(pageable: Pageable): Slice<ProductInfo> =
         productRepository
@@ -52,5 +49,11 @@ class ProductService(
         productRepository.saveAll(products)
     }
 
-    fun findPopularProducts(): List<PopularProductInfo> = productRepository.findPopularProducts()
+    fun findPopularProducts(): List<PopularProductInfo> =
+        runCatching { popularProductCacheRepository.findAll() }
+            .getOrElse {
+                productRepository
+                    .findPopularProducts()
+                    .also { popularProductCacheRepository.save(it) }
+            }
 }

@@ -6,7 +6,7 @@ import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.domain.order.OrderStatus
 import kr.hhplus.be.server.helper.ConcurrentTestHelper
 import kr.hhplus.be.server.infrastructure.persistence.order.DataJpaOrderRepository
-import kr.hhplus.be.server.infrastructure.persistence.order.JpaOrderItemRepository
+import kr.hhplus.be.server.infrastructure.persistence.order.DataJpaOrderItemRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.DataJpaProductRepository
 import kr.hhplus.be.server.infrastructure.persistence.user.DataJpaUserRepository
 import kr.hhplus.be.server.stub.OrderFixture
@@ -34,7 +34,7 @@ class PaymentControllerTest : IntegrationTest() {
     private lateinit var dataJpaOrderRepository: DataJpaOrderRepository
 
     @Autowired
-    private lateinit var jpaOrderItemRepository: JpaOrderItemRepository
+    private lateinit var dataJpaOrderItemRepository: DataJpaOrderItemRepository
 
     @Autowired
     private lateinit var dataJpaProductRepository: DataJpaProductRepository
@@ -135,7 +135,7 @@ class PaymentControllerTest : IntegrationTest() {
                     quantity = 1,
                 ),
             )
-        jpaOrderItemRepository.saveAllAndFlush(orderItems)
+        dataJpaOrderItemRepository.saveAllAndFlush(orderItems)
     }
 
     @Nested

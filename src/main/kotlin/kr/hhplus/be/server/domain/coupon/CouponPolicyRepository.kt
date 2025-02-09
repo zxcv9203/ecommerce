@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.domain.coupon
 
 interface CouponPolicyRepository {
-    fun findById(id: Long): CouponPolicy?
+    fun findByIdWithLock(id: Long): CouponPolicy?
+
+    fun findIssuableCouponPolicy(): List<CouponPolicy>
 }
