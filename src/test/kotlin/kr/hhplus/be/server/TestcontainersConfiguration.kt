@@ -1,6 +1,7 @@
 package kr.hhplus.be.server
 
 import jakarta.annotation.PreDestroy
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.springframework.context.annotation.Configuration
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.MySQLContainer
@@ -23,10 +24,11 @@ class TestcontainersConfiguration {
                 .apply {
                     start()
                 }
+
+        @ServiceConnection
         val redisContainer: GenericContainer<*> =
             GenericContainer<Nothing>(DockerImageName.parse("redis:7.4.2"))
                 .apply {
-                    withExposedPorts(6379)
                     start()
                 }
 

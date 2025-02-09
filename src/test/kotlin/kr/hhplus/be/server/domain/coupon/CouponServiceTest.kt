@@ -22,27 +22,7 @@ class CouponServiceTest {
     private lateinit var couponService: CouponService
 
     @MockK
-    private lateinit var couponPolicyRepository: CouponPolicyRepository
-
-    @MockK
     private lateinit var couponRepository: CouponRepository
-
-    @Nested
-    @DisplayName("쿠폰 발급 테스트")
-    inner class Issue {
-        @Test
-        @DisplayName("[실패] 전달한 쿠폰 정책이 없다면 BusinessException 발생")
-        fun testIssueFailWithoutPolicy() {
-            val user = UserFixture.create()
-            val couponPolicyId = 1L
-
-            every { couponPolicyRepository.findById(couponPolicyId) } returns null
-
-            assertThatThrownBy { couponService.issue(user, couponPolicyId) }
-                .isInstanceOf(BusinessException::class.java)
-                .hasFieldOrPropertyWithValue("code", ErrorCode.COUPON_NOT_FOUND)
-        }
-    }
 
     @Nested
     @DisplayName("주문에 사용가능한 상태의 쿠폰 조회")

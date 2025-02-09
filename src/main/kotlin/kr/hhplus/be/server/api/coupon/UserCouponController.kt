@@ -41,5 +41,5 @@ class UserCouponController(
             .toCommand(userId, authenticationId)
             .let { couponUseCase.issue(it) }
             .let { CustomResponse.success(SuccessCode.COUPON_ISSUE_SUCCESS, it) }
-            .let { ResponseEntity.status(HttpStatus.CREATED).body(it) }
+            .let { ResponseEntity.status(SuccessCode.COUPON_ISSUE_SUCCESS.status).body(it) }
 }
