@@ -18,4 +18,6 @@ enum class SuccessCode(
     ORDER_CREATED(HttpStatus.CREATED, "주문이 성공적으로 생성되었습니다."),
 
     PAYMENT_COMPLETED(HttpStatus.OK, "결제가 성공적으로 완료되었습니다."),
+
+    EXTERNAL_PAYMENT_API_COMPLETED(HttpStatus.OK, "외부 데이터 플랫폼에 결제 데이터 전송에 성공했습니다."),
 }
