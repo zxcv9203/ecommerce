@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class ProductService(
@@ -53,7 +54,7 @@ class ProductService(
         runCatching { popularProductCacheRepository.findAll() }
             .getOrElse {
                 productRepository
-                    .findPopularProducts()
+                    .findPopularProducts(LocalDateTime.now().minusDays(1))
                     .also { popularProductCacheRepository.save(it) }
             }
 }
