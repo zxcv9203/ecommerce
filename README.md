@@ -41,3 +41,6 @@ docker-compose up -d
 
 ## 인덱스 적용
 [인덱스](./docs/step15.md)
+
+## 트랜잭션 분리
+[트랜잭션 분리](./docs/step16.md)

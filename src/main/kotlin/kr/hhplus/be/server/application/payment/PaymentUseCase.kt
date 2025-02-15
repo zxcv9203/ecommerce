@@ -2,12 +2,14 @@ package kr.hhplus.be.server.application.payment
 
 import kr.hhplus.be.server.application.order.command.toCommand
 import kr.hhplus.be.server.application.payment.command.PaymentCommand
+import kr.hhplus.be.server.application.payment.event.PaymentCompleteEvent
 import kr.hhplus.be.server.application.user.command.toUseBalanceCommand
 import kr.hhplus.be.server.domain.coupon.CouponService
 import kr.hhplus.be.server.domain.order.OrderService
 import kr.hhplus.be.server.domain.payment.PaymentService
 import kr.hhplus.be.server.domain.product.ProductService
 import kr.hhplus.be.server.domain.user.UserService
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -18,6 +20,7 @@ class PaymentUseCase(
     private val paymentService: PaymentService,
     private val productService: ProductService,
     private val couponService: CouponService,
+    private val eventPublisher: ApplicationEventPublisher,
 ) {
     @Transactional
     fun pay(command: PaymentCommand) {
@@ -28,16 +31,17 @@ class PaymentUseCase(
                 .getByIdAndUserIdWithLock(command.orderId, user.id)
                 .also { it.ensureNotPaid() }
 
-        val orderItems =
+        val orderItemsCommand =
             orderService
                 .findOrderItems(order.id)
                 .map { it.toCommand() }
 
         val coupon = couponService.findByOrderId(order.id)
-        userService.useBalance(user.toUseBalanceCommand(order.discountPrice))
         coupon?.let { couponService.use(it) }
-        productService.reduceStock(orderItems)
-        paymentService.pay(order)
+        userService.useBalance(user.toUseBalanceCommand(order.discountPrice))
+        productService.reduceStock(orderItemsCommand)
         orderService.confirm(order)
+        val payment = paymentService.pay(order)
+        eventPublisher.publishEvent(PaymentCompleteEvent(payment.id, payment.status, payment.amount))
     }
 }
