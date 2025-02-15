@@ -3,6 +3,7 @@ package kr.hhplus.be.server.domain.product
 import kr.hhplus.be.server.application.product.info.PopularProductInfo
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
+import java.time.LocalDateTime
 
 interface ProductRepository {
     fun findAll(pageable: Pageable): Slice<Product>
@@ -13,5 +14,5 @@ interface ProductRepository {
 
     fun saveAll(products: List<Product>): List<Product>
 
-    fun findPopularProducts(): List<PopularProductInfo>
+    fun findPopularProducts(datetime: LocalDateTime): List<PopularProductInfo>
 }

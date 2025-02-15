@@ -4,6 +4,7 @@ import kr.hhplus.be.server.domain.product.PopularProductCacheRepository
 import kr.hhplus.be.server.domain.product.ProductRepository
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
 @Component
 class ProductScheduler(
@@ -12,7 +13,7 @@ class ProductScheduler(
 ) {
     @Scheduled(fixedRate = CACHE_REFRESH_INTERVAL)
     fun updatePopularProducts() {
-        val popularProducts = productRepository.findPopularProducts()
+        val popularProducts = productRepository.findPopularProducts(LocalDateTime.now().minusDays(1))
         popularProductCacheRepository.save(popularProducts)
     }
 

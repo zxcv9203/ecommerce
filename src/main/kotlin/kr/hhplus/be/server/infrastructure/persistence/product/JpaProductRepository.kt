@@ -6,6 +6,7 @@ import kr.hhplus.be.server.domain.product.ProductRepository
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Slice
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 
 @Repository
 class JpaProductRepository(
@@ -19,5 +20,5 @@ class JpaProductRepository(
 
     override fun saveAll(products: List<Product>): List<Product> = dataJpaProductRepository.saveAll(products)
 
-    override fun findPopularProducts(): List<PopularProductInfo> = dataJpaProductRepository.findPopularProducts()
+    override fun findPopularProducts(datetime: LocalDateTime): List<PopularProductInfo> = dataJpaProductRepository.findPopularProducts(datetime)
 }

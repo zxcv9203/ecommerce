@@ -39,3 +39,8 @@ docker-compose up -d
 [캐시 정리](./docs/cache.md)
 [redis를 이용한 로직 개선](./docs/redis.md)
 
+## 인덱스 적용
+[인덱스](./docs/step15.md)
+
+## 트랜잭션 분리
+[트랜잭션 분리](./docs/step16.md)

@@ -37,7 +37,8 @@ CREATE TABLE IF NOT EXISTS orders
     payment_price BIGINT      NOT NULL COMMENT '결제 가격',
     status        VARCHAR(20) NOT NULL COMMENT '주문 상태',
     created_at    DATETIME    NOT NULL COMMENT '생성 시간',
-    updated_at    DATETIME    NOT NULL COMMENT '수정 시간'
+    updated_at    DATETIME    NOT NULL COMMENT '수정 시간',
+    INDEX idx_order_status_created_at (status, created_at)
 );
 
 CREATE TABLE IF NOT EXISTS order_items
@@ -47,7 +48,8 @@ CREATE TABLE IF NOT EXISTS order_items
     product_id BIGINT   NOT NULL COMMENT '상품 ID',
     count      INT      NOT NULL COMMENT '주문 수량',
     created_at DATETIME NOT NULL COMMENT '생성 시간',
-    updated_at DATETIME NOT NULL COMMENT '수정 시간'
+    updated_at DATETIME NOT NULL COMMENT '수정 시간',
+    INDEX idx_order_items_order_id_product_id (order_id, product_id, count)
 );
 
 
