@@ -1,32 +1,28 @@
 package kr.hhplus.be.server.infrastructure.external.payment
 
-import kr.hhplus.be.server.application.payment.ExternalPaymentClient
-import kr.hhplus.be.server.domain.payment.PaymentStatus
+import kr.hhplus.be.server.application.payment.PaymentCompleteEventPublisher
+import kr.hhplus.be.server.application.payment.event.PaymentCompletedEvent
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 
 @Component
-class FakeExternalPaymentClient(
+class FakePaymentCompleteEventPublisher(
     private val restClient: RestClient = RestClient.create(),
-) : ExternalPaymentClient {
+) : PaymentCompleteEventPublisher {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    override fun sendPaymentResult(
-        paymentId: Long,
-        status: PaymentStatus,
-        amount: Long,
-    ) {
+    override fun send(event: PaymentCompletedEvent) {
         runCatching {
             restClient
                 .post()
                 .uri("http://localhost:8080/external/payments")
                 .body(
                     mapOf(
-                        "paymentId" to paymentId,
-                        "status" to status,
-                        "amount" to amount,
+                        "paymentId" to event.paymentId,
+                        "status" to event.status,
+                        "amount" to event.amount,
                     ),
                 ).contentType(MediaType.APPLICATION_JSON)
                 .retrieve()
