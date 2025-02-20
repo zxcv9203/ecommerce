@@ -1,9 +1,8 @@
 package kr.hhplus.be.server
 
+import com.redis.testcontainers.RedisContainer
 import jakarta.annotation.PreDestroy
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.springframework.context.annotation.Configuration
-import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.utility.DockerImageName
 
@@ -21,16 +20,11 @@ class TestcontainersConfiguration {
                 .withDatabaseName("hhplus")
                 .withUsername("test")
                 .withPassword("test")
-                .apply {
-                    start()
-                }
+                .apply { start() }
 
-        @ServiceConnection
-        val redisContainer: GenericContainer<*> =
-            GenericContainer<Nothing>(DockerImageName.parse("redis:7.4.2"))
-                .apply {
-                    start()
-                }
+        val redisContainer: RedisContainer =
+            RedisContainer(RedisContainer.DEFAULT_IMAGE_NAME.withTag(RedisContainer.DEFAULT_TAG))
+                .apply { start() }
 
         init {
             System.setProperty(
@@ -42,6 +36,8 @@ class TestcontainersConfiguration {
             System.setProperty("spring.datasource.hikari.maximum-pool-size", "3")
             System.setProperty("spring.datasource.hikari.connection-timeout", "10000")
             System.setProperty("spring.datasource.hikari.max-lifetime", "60000")
+            System.setProperty("spring.data.redis.host", redisContainer.host)
+            System.setProperty("spring.data.redis.port", redisContainer.firstMappedPort.toString())
         }
     }
 }
