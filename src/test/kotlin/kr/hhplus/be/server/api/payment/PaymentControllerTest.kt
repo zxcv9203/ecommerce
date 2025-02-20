@@ -4,9 +4,11 @@ import kr.hhplus.be.server.api.payment.request.PaymentRequest
 import kr.hhplus.be.server.common.constant.ErrorCode
 import kr.hhplus.be.server.common.constant.SuccessCode
 import kr.hhplus.be.server.domain.order.OrderStatus
+import kr.hhplus.be.server.domain.outbox.OutboxStatus
 import kr.hhplus.be.server.helper.ConcurrentTestHelper
-import kr.hhplus.be.server.infrastructure.persistence.order.DataJpaOrderRepository
 import kr.hhplus.be.server.infrastructure.persistence.order.DataJpaOrderItemRepository
+import kr.hhplus.be.server.infrastructure.persistence.order.DataJpaOrderRepository
+import kr.hhplus.be.server.infrastructure.persistence.outbox.DataJpaOutboxRepository
 import kr.hhplus.be.server.infrastructure.persistence.product.DataJpaProductRepository
 import kr.hhplus.be.server.infrastructure.persistence.user.DataJpaUserRepository
 import kr.hhplus.be.server.stub.OrderFixture
@@ -17,6 +19,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
@@ -38,6 +41,9 @@ class PaymentControllerTest : IntegrationTest() {
 
     @Autowired
     private lateinit var dataJpaProductRepository: DataJpaProductRepository
+
+    @Autowired
+    private lateinit var outboxRepository: DataJpaOutboxRepository
 
     @BeforeEach
     fun setUp() {
@@ -156,6 +162,10 @@ class PaymentControllerTest : IntegrationTest() {
                 ).andExpect(status().isOk)
                 .andExpect(jsonPath("$.code").value(SuccessCode.PAYMENT_COMPLETED.status.value()))
                 .andExpect(jsonPath("$.message").value(SuccessCode.PAYMENT_COMPLETED.message))
+            Thread.sleep(150)
+            val outbox = outboxRepository.findAll()
+            assertThat(outbox.size).isEqualTo(1)
+            assertThat(outbox[0].status).isEqualTo(OutboxStatus.PROCESSED)
         }
 
         @Test
