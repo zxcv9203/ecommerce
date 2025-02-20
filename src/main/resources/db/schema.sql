@@ -92,3 +92,15 @@ CREATE TABLE IF NOT EXISTS coupon_policies
     created_at      DATETIME     NOT NULL COMMENT '생성 시간',
     updated_at      DATETIME     NOT NULL COMMENT '수정 시간'
 );
+
+CREATE TABLE IF NOT EXISTS outbox
+(
+    id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    aggregate_id BIGINT      NOT NULL COMMENT '이벤트 ID',
+    event_type   VARCHAR(20) NOT NULL COMMENT '이벤트 유형',
+    retry_count  INT         NOT NULL COMMENT '재시도 횟수',
+    status       VARCHAR(20) NOT NULL COMMENT '전송 상태',
+    payload      JSON        NOT NULL COMMENT '전송 데이터',
+    created_at   DATETIME    NOT NULL COMMENT '생성 시간',
+    updated_at   DATETIME    NOT NULL COMMENT '수정 시간'
+)
