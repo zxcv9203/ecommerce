@@ -6,6 +6,7 @@ TRUNCATE TABLE coupons;
 TRUNCATE TABLE coupon_policies;
 TRUNCATE TABLE products;
 TRUNCATE TABLE users;
+TRUNCATE TABLE outbox;
 
 -- 유저 데이터 생성
 INSERT INTO users (id, name, balance, version, created_at, updated_at)
