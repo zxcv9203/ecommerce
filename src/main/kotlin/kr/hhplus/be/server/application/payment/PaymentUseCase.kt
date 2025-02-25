@@ -2,7 +2,7 @@ package kr.hhplus.be.server.application.payment
 
 import kr.hhplus.be.server.application.order.command.toCommand
 import kr.hhplus.be.server.application.payment.command.PaymentCommand
-import kr.hhplus.be.server.application.payment.event.PaymentCompleteEvent
+import kr.hhplus.be.server.application.payment.event.PaymentCompletedEvent
 import kr.hhplus.be.server.application.user.command.toUseBalanceCommand
 import kr.hhplus.be.server.domain.coupon.CouponService
 import kr.hhplus.be.server.domain.order.OrderService
@@ -42,6 +42,6 @@ class PaymentUseCase(
         productService.reduceStock(orderItemsCommand)
         orderService.confirm(order)
         val payment = paymentService.pay(order)
-        eventPublisher.publishEvent(PaymentCompleteEvent(payment.id, payment.status, payment.amount))
+        eventPublisher.publishEvent(PaymentCompletedEvent(payment.id, payment.status, payment.amount))
     }
 }
